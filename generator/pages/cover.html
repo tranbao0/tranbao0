@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cover</title>
+<link rel="stylesheet" href="zine.css">
+<style>
+  #page { height: 1000px; }
+  .sheet { position: absolute; left: 56px; top: 56px; width: 1488px; height: 888px; background-color: #fff; }
+  .smudge { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.5), rgba(0,0,0,0)); }
+  .stamp-name { position: absolute; left: 250px; top: 575px; font-family: "Archivo Black", sans-serif; font-size: 100px; line-height: 1; transform: rotate(-2.2deg); }
+  .stamp-role { position: absolute; left: 392px; top: 705px; font-size: 60px; line-height: 1.1; -webkit-text-stroke: 1.4px #000; transform: rotate(1.4deg); }
+  .scribble { position: absolute; overflow: visible; }
+</style>
+</head>
+<body>
+<div id="page">
+  <div class="base-layer">
+    <div class="sheet" id="sheet"></div>
+    <div class="smudge" style="left:40px;top:300px;width:300px;height:420px;opacity:.6"></div>
+
+    <svg class="scribble" style="left:210px;top:535px" width="1180" height="60" viewBox="0 0 1180 60" fill="none" stroke="#000" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 30 C 160 12, 300 46, 470 26 S 800 40, 1000 22 S 1130 34, 1172 18"/>
+      <path d="M40 46 C 220 30, 380 54, 560 40 S 900 52, 1110 36" stroke-width="5"/>
+    </svg>
+
+    <div class="stamp stamp-name" id="stampName">Bao Tran</div>
+    <div class="stamp stamp-role" id="stampRole">Software Engineering @ SJSU</div>
+
+    <div class="track" id="track">TRACK 01 - We code (Intro)</div>
+  </div>
+
+  <div class="title-layer" id="title"></div>
+</div>
+<script src="parts.js"></script>
+<script>
+  zine.ready(['Anton', 'Archivo Black', 'Alfa Slab One', 'Special Elite', 'Permanent Marker', 'Rubik Mono One'], () => {
+    zine.burn(document.getElementById('sheet'), { seed: 135, depth: 150, singe: 50, reach: 92 });
+    zine.track(document.getElementById('track'), { seed: 5 });
+    zine.wear(document.getElementById('stampName'), { seed: 33 });
+    zine.wear(document.getElementById('stampRole'), { seed: 22, patches: 28, scratches: 4, size: 3 });
+
+    const title = document.getElementById('title');
+    // Cut-out letters laid out left to right on one baseline. `dy` nudges a tile off the baseline.
+    const letters = [
+      { text: 'W', font: 'Anton', heightInk: 320, fill: '#000', color: '#fff', rot: -3, dy: 0, gap: -12 },
+      { text: 'e', font: 'Alfa Slab One', heightInk: 185, fill: '#fff', color: '#000', rot: 2.5, dy: 6, gap: 44 },
+      { text: 'c', font: 'Archivo Black', heightInk: 168, fill: '#8f8f8f', color: '#000', rot: -2, dy: 4, gap: -12 },
+      { text: 'o', font: 'Anton', heightInk: 185, fill: '#000', color: '#fff', rot: 3, dy: 8, gap: -12 },
+      { text: 'd', font: 'Alfa Slab One', heightInk: 320, fill: '#fff', color: '#000', rot: -1.5, dy: -2, gap: -12 },
+      { text: 'e', font: 'Anton', heightInk: 185, fill: '#fff', color: '#000', rot: 2, dy: 3, gap: 0 },
+    ];
+
+    const baseline = 520;
+    const left = 184;
+    const avail = 1225;
+    const padX = 12;
+    const padY = 18;
+    const glyphWidth = letters.reduce((sum, l) => sum + zine.ink(l.text, l.font, 400, l.heightInk).width, 0);
+    const fixed = letters.reduce((sum, l, i) => sum + padX * 2 + (i < letters.length - 1 ? l.gap : 0), 0);
+    const scale = (avail - fixed) / glyphWidth;
+    document.body.dataset.titleScale = scale.toFixed(3);
+    let x = left;
+    letters.forEach((l, i) => {
+      const el = zine.tile(title, { ...l, heightInk: l.heightInk * scale, padX, padY, x, y: 0, seed: 31 + i });
+      el.style.top = `${baseline + l.dy - (el.offsetHeight - padY)}px`;
+      x += el.offsetWidth + l.gap;
+    });
+  });
+</script>
+</body>
+</html>
