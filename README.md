@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-<img src="assets/member-profile.png" alt="Track 02, Member Profile. A typed profile sheet taped to a black page. Stage name Bao. Real name Bao Tran. Position Maknae, Main Backend, Lead Debugger, Sub Frontend. Based in San Jose, CA. Debut 2019. MBTI ENTP. Bias Soyeon. Favorite i-dle song Mono. Fun fact: my vocal range is G2 to C6. A black stamp that reads Maknae sits where a photo would be." width="640">
+<img src="assets/member-profile.png" alt="Track 02, Member Profile. A typed profile sheet taped to a black page. Stage name Bao. Real name Bao Tran. Position Maknae (the youngest member), Main Backend, Lead Debugger, Sub Frontend. Based in San Jose, CA. Debut 2019. MBTI ENTP. Bias, meaning favorite member, Soyeon. Favorite i-dle song Mono. Fun fact: my vocal range is G2 to C6. A black stamp that reads Maknae sits where a photo would be." width="640">
 </p>
 
 <p align="center">
@@ -14,15 +14,15 @@
 </p>
 
 <p align="center">
-<img src="assets/projects.png" alt="Track 04, Title Track: Projects." width="640">
+<img src="assets/projects.png" alt="Track 04, Title Track: Projects. The title track is Weekrow." width="640">
 </p>
 
-<p align="center"><a href="https://github.com/tranbao0/Simple-CanvasTasks"><img src="assets/card-weekrow.png" alt="Weekrow: your Canvas week as one to-do list. TypeScript, Preact, WXT." width="320"></a><a href="https://github.com/tranbao0/SongRanking"><img src="assets/card-songranking.png" alt="SongRanking: music video view charts, rendered as countdown videos. Python, ffmpeg, Gemini." width="320"></a></p>
+<p align="center"><a href="https://github.com/tranbao0/Simple-CanvasTasks"><img src="assets/card-weekrow.png" alt="Title track: Weekrow, your Canvas week as one to-do list. TypeScript, Preact, WXT. Opens the repo." width="320"></a><a href="https://github.com/tranbao0/SongRanking"><img src="assets/card-songranking.png" alt="SongRanking: music video view charts, rendered as countdown videos. Python, ffmpeg, Gemini. Opens the repo." width="320"></a></p>
 
-<p align="center"><a href="https://github.com/tranbao0/FiTTTT"><img src="assets/card-fitttt.png" alt="FiTTTT: built in 3 days on a borrowed Mac. SwiftUI, Firebase. An empty photo frame says: no screenshot, the Mac went home." width="320"></a><a href="https://github.com/tranbao0/Beautiful-Nail"><img src="assets/card-beautiful-nail.png" alt="Beautiful Nail: salon booking, built to stop double bookings. Spring Boot, SQLite." width="320"></a></p>
+<p align="center"><a href="https://github.com/tranbao0/FiTTTT"><img src="assets/card-fitttt.png" alt="FiTTTT: built in 3 days on a borrowed Mac. SwiftUI, Firebase. An empty photo frame says: no screenshot, the Mac went home. Opens the repo." width="320"></a><a href="https://github.com/tranbao0/Beautiful-Nail"><img src="assets/card-beautiful-nail.png" alt="Beautiful Nail: salon booking, built to stop double bookings. Spring Boot, SQLite. Opens the repo." width="320"></a></p>
 
 <p align="center">
-<img src="assets/activity.png" alt="Track 05, Activity. My contribution graph for the last year and my top languages, copied fresh every day." width="640">
+<img src="assets/activity.png" alt="Track 05, Activity. 624 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 9%, Swift 6%. Copied 2026-10-28." width="640">
 </p>
 
 <p align="center">

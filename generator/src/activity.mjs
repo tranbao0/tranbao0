@@ -1,9 +1,14 @@
 // Builds the activity page: the contribution graph and the top languages of tranbao0.
 // Live data comes from the GitHub API (needs GITHUB_TOKEN). ACTIVITY_FIXTURE=<file.json> builds from a saved file instead.
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { buildStatic } from './pages.mjs';
 
 export const LOGIN = 'tranbao0';
+
+// The alt text for README.md goes here. It is not committed.
+export const altFile = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.cache', 'activity-alt.txt');
 
 const API = 'https://api.github.com';
 
@@ -23,7 +28,7 @@ export const IGNORED_LANGUAGES = new Set([
   'HTML', 'CSS', 'SCSS', 'Sass', 'Less', 'SQL', 'PLpgSQL', 'TSQL', 'PLSQL',
   'Shell', 'PowerShell', 'Batchfile', 'Dockerfile', 'Makefile', 'CMake',
   'Jinja', 'Handlebars', 'EJS', 'Mustache', 'Pug', 'XSLT', 'TeX', 'Roff',
-  'Jupyter Notebook', 'JSON', 'YAML', 'Markdown',
+  'JSON', 'YAML', 'Markdown',
 ]);
 
 const LEVELS = ['NONE', 'FIRST_QUARTILE', 'SECOND_QUARTILE', 'THIRD_QUARTILE', 'FOURTH_QUARTILE'];
@@ -78,6 +83,29 @@ export function shapeActivity({ calendar, languages, copyDate }) {
   return { ...shapeCalendar(calendar), languages: topLanguages(languages), copyDate };
 }
 
+// A year of weeks is 52 or 53 columns. Anything less means the API answer is broken, so the run must fail before it commits a page.
+export const MIN_WEEKS = 52;
+
+// Throws when the shaped data cannot make a trustworthy page.
+export function checkActivity(data) {
+  if (!Number.isInteger(data.total) || data.total < 0) throw new Error(`Bad contribution total: ${data.total}`);
+  if (!Array.isArray(data.weeks) || data.weeks.length < MIN_WEEKS) throw new Error(`Too few weeks in the calendar: ${data.weeks?.length}`);
+  if (!data.languages.length) throw new Error('No programming languages found');
+  return data;
+}
+
+const ALT_ALLOWED = /[^A-Za-z0-9 ,.%:+#-]/g;
+
+// Keeps only letters, digits, spaces and the characters , . % : + # -
+export const cleanAlt = (text) => String(text).replace(ALT_ALLOWED, '').replace(/ {2,}/g, ' ').trim();
+
+// Plain alt text with the numbers of the page, for the image in README.md.
+export function altText(data) {
+  const noun = data.total === 1 ? 'contribution' : 'contributions';
+  const languages = data.languages.map((l) => `${cleanAlt(l.name)} ${l.percent}%`).join(', ');
+  return cleanAlt(`Track 05, Activity. ${data.total} ${noun} in the last year. Top languages: ${languages}. Copied ${data.copyDate}.`);
+}
+
 async function api(url, token, init = {}) {
   const res = await fetch(url, {
     ...init,
@@ -105,14 +133,17 @@ export async function fetchRaw(token, login = LOGIN) {
 }
 
 export async function loadActivity(env = process.env) {
-  if (env.ACTIVITY_FIXTURE) return shapeActivity(JSON.parse(await readFile(env.ACTIVITY_FIXTURE, 'utf8')));
+  if (env.ACTIVITY_FIXTURE) return checkActivity(shapeActivity(JSON.parse(await readFile(env.ACTIVITY_FIXTURE, 'utf8'))));
   if (!env.GITHUB_TOKEN) throw new Error('Set GITHUB_TOKEN, or set ACTIVITY_FIXTURE to a saved JSON file');
-  return shapeActivity(await fetchRaw(env.GITHUB_TOKEN));
+  return checkActivity(shapeActivity(await fetchRaw(env.GITHUB_TOKEN)));
 }
 
 export async function buildActivity(renderer) {
   const data = await loadActivity();
   console.log(`Total contributions: ${data.total}`);
   console.log(`Top languages: ${data.languages.map((l) => `${l.name} ${l.percent}%`).join(', ')}`);
-  return buildStatic(renderer, { file: 'activity.html', out: 'activity.png', seed: 505, width: 1600, data });
+  const files = await buildStatic(renderer, { file: 'activity.html', out: 'activity.png', seed: 505, width: 1600, data });
+  await mkdir(path.dirname(altFile), { recursive: true });
+  await writeFile(altFile, `${altText(data)}\n`);
+  return files;
 }

@@ -32,9 +32,16 @@
     return k;
   }
 
+  // Adds the `open repo` label and arrow to the bottom of the sheet.
+  function addOpenRepo() {
+    $('sheet').insertAdjacentHTML('beforeend',
+      `<div id="open"><span>open repo</span><svg width="86" height="86" viewBox="0 0 130 130" fill="none" stroke="#000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><path d="M10 112 C 30 70, 70 40, 108 22"/><path d="M62 14 L 112 18 L 104 66"/></svg></div>`);
+  }
+
   async function start({ seed, tilt, shotTilt, setup }) {
     if (tilt !== undefined) $('sheet').style.setProperty('--tilt', `${tilt}deg`);
     if (shotTilt !== undefined) document.querySelector('.shot').style.setProperty('--shot-tilt', `${shotTilt}deg`);
+    addOpenRepo();
     await Promise.all([...document.images].map((img) => img.decode()));
     await zine.ready(['Anton', 'Special Elite', 'Permanent Marker'], () => {
       zine.paper($('sheet'), { seed, sides: { top: 'cut', right: 'cut', bottom: 'torn', left: 'cut' } });

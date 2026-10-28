@@ -1,10 +1,11 @@
 /* Shared look of the two link tags: a paper tag hung on a string, 800px wide. */
 body { width: 800px; }
 #page { width: 800px; height: 750px; }
-#wrap { position: absolute; left: 48px; top: 104px; width: 704px; height: 620px; transform-origin: 352px 74px; transform: rotate(var(--tilt)); }
+#wrap { position: absolute; left: 48px; top: 130px; width: 704px; height: 598px; transform-origin: 352px 74px; transform: rotate(var(--tilt)); }
 #paper { position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 #text { position: absolute; left: 50px; top: 112px; right: 30px; }
 #text h1 { font-family: "Anton", sans-serif; font-weight: 400; font-size: 124px; line-height: 0.98; letter-spacing: 2px; text-transform: uppercase; }
 #text p { margin-top: 16px; font-size: 56px; line-height: 1.1; white-space: nowrap; -webkit-text-stroke: 1.2px #000; }
 #arrow { position: absolute; right: 28px; top: 148px; overflow: visible; transform: rotate(0deg); }
 #string { position: absolute; left: 0; top: 0; overflow: visible; }
+#tape { position: absolute; left: 238px; top: 14px; width: 324px; height: 70px; transform: rotate(var(--tape-tilt, -1.5deg)); }

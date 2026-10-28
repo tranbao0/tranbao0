@@ -1,7 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { shapeCalendar, topLanguages, isCounted, utcDate, shapeActivity, loadActivity, IGNORED_LANGUAGES } from '../src/activity.mjs';
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { shapeCalendar, topLanguages, isCounted, utcDate, shapeActivity, loadActivity, checkActivity, altText, cleanAlt, IGNORED_LANGUAGES } from '../src/activity.mjs';
+
+const here = (relative) => fileURLToPath(new URL(relative, import.meta.url));
 
 const day = (date, count, level, weekday) => ({ date, contributionCount: count, contributionLevel: level, weekday });
 
@@ -89,15 +94,103 @@ test('utcDate gives the UTC calendar day', () => {
 });
 
 test('the saved fixture shapes into a full page model', async () => {
-  const data = await loadActivity({ ACTIVITY_FIXTURE: new URL('../fixtures/activity.json', import.meta.url).pathname });
+  const data = await loadActivity({ ACTIVITY_FIXTURE: here('../fixtures/activity.json') });
   assert.equal(data.weeks.length, 53);
   assert.ok(data.weeks.slice(0, -1).every((w) => w.length === 7));
   assert.equal(data.languages.length, 5);
   assert.match(data.copyDate, /^\d{4}-\d{2}-\d{2}$/);
-  const raw = JSON.parse(await readFile(new URL('../fixtures/activity.json', import.meta.url), 'utf8'));
+  const raw = JSON.parse(await readFile(here('../fixtures/activity.json'), 'utf8'));
   assert.deepEqual(data, shapeActivity(raw));
   const sum = data.weeks.flat().reduce((a, d) => a + d.count, 0);
   assert.equal(sum, data.total);
+});
+
+test('the edge-case fixtures pass the sanity checks and keep their promise', async () => {
+  const load = (name) => loadActivity({ ACTIVITY_FIXTURE: here(`../fixtures/${name}.json`) });
+  const big = await load('activity-12345');
+  assert.equal(big.total, 12345);
+  assert.equal(big.weeks.flat().reduce((a, d) => a + d.count, 0), 12345);
+  const jupyter = await load('activity-jupyter');
+  assert.ok(jupyter.languages.some((l) => l.name === 'Jupyter Notebook'));
+  const zero = await load('activity-zero');
+  assert.equal(zero.total, 0);
+  assert.ok(zero.weeks.flat().every((d) => d.count === 0 && d.level === 0));
+});
+
+const goodData = () => ({
+  total: 610,
+  weeks: Array.from({ length: 53 }, () => []),
+  languages: [{ name: 'Java', bytes: 1, percent: 100 }],
+  copyDate: '2026-10-28',
+});
+
+test('checkActivity accepts a year of weeks, a language and an integer total', () => {
+  assert.doesNotThrow(() => checkActivity(goodData()));
+  assert.doesNotThrow(() => checkActivity({ ...goodData(), total: 0 }));
+  assert.doesNotThrow(() => checkActivity({ ...goodData(), weeks: goodData().weeks.slice(0, 52) }));
+});
+
+test('checkActivity throws when there are fewer than 52 weeks', () => {
+  assert.throws(() => checkActivity({ ...goodData(), weeks: goodData().weeks.slice(0, 51) }), /weeks/);
+  assert.throws(() => checkActivity({ ...goodData(), weeks: [] }), /weeks/);
+});
+
+test('checkActivity throws when there are no languages', () => {
+  assert.throws(() => checkActivity({ ...goodData(), languages: [] }), /languages/);
+});
+
+test('checkActivity throws when the total is not an integer', () => {
+  for (const total of [undefined, null, '610', 610.5, NaN, Infinity, -1]) {
+    assert.throws(() => checkActivity({ ...goodData(), total }), /total/, String(total));
+  }
+});
+
+test('loadActivity fails on a calendar that is too short', async () => {
+  const raw = JSON.parse(await readFile(here('../fixtures/activity.json'), 'utf8'));
+  raw.calendar.weeks = raw.calendar.weeks.slice(0, 20);
+  const file = join(await mkdtemp(join(tmpdir(), 'activity-')), 'short.json');
+  await writeFile(file, JSON.stringify(raw));
+  await assert.rejects(loadActivity({ ACTIVITY_FIXTURE: file }), /weeks/);
+});
+
+test('altText names the page, the total, the languages and the date', () => {
+  const data = {
+    ...goodData(),
+    total: 624,
+    languages: [
+      { name: 'TypeScript', percent: 44 }, { name: 'Python', percent: 23 }, { name: 'Java', percent: 18 },
+      { name: 'JavaScript', percent: 9 }, { name: 'Swift', percent: 6 },
+    ],
+  };
+  assert.equal(
+    altText(data),
+    'Track 05, Activity. 624 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 9%, Swift 6%. Copied 2026-10-28.',
+  );
+});
+
+test('altText keeps only letters, digits, spaces and the characters , . % : + # -', () => {
+  const data = { ...goodData(), languages: [{ name: 'C++', percent: 50 }, { name: 'F*"<b>x</b>', percent: 30 }, { name: 'Objective-C', percent: 20 }, { name: 'Jupyter Notebook', percent: 1 }] };
+  const alt = altText(data);
+  assert.match(alt, /^[A-Za-z0-9 ,.%:+#-]+$/);
+  assert.ok(alt.includes('C++ 50%'));
+  assert.ok(alt.includes('Objective-C 20%'));
+  assert.ok(alt.includes('Jupyter Notebook 1%'));
+  assert.ok(!alt.includes('<') && !alt.includes('"') && !alt.includes('*'));
+});
+
+test('altText uses the singular for one contribution and handles zero', () => {
+  assert.match(altText({ ...goodData(), total: 1 }), /1 contribution in the last year/);
+  assert.match(altText({ ...goodData(), total: 0 }), /0 contributions in the last year/);
+});
+
+test('cleanAlt strips quotes, markup, line breaks and dashes that are not plain hyphens', () => {
+  assert.equal(cleanAlt('a"b<c>d\ne\u2014f  g'), 'abcde' + 'f g');
+  assert.equal(cleanAlt('  x  '), 'x');
+});
+
+test('the page builds elements with textContent and never uses innerHTML', async () => {
+  const html = await readFile(here('../pages/activity.html'), 'utf8');
+  assert.ok(!/innerHTML|insertAdjacentHTML|outerHTML|document\.write/.test(html));
 });
 
 test('loadActivity asks for a token when there is no fixture', async () => {
