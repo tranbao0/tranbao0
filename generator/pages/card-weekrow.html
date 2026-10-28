@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="zine.css">
 <link rel="stylesheet" href="card.css">
 <style>
+  #title { position: absolute; left: 418px; top: 118px; z-index: 2; font-family: "Rubik Mono One", sans-serif; font-size: 68px; line-height: 1; letter-spacing: 2px; padding: 16px 22px 8px 26px; border-width: 9px; background: #fff; transform: rotate(5deg); }
   .shot img { filter: url(#weekrow); }
 </style>
 </head>
@@ -17,6 +18,7 @@
     <div id="caption">Your Canvas week<br>as one to-do list</div>
     <div id="tech">TypeScript, Preact, WXT</div>
   </div>
+  <div class="stamp double" id="title">TITLE</div>
   <div class="tape-piece" id="tapeA" style="left:-34px;top:30px;transform:rotate(-38deg)"></div>
   <div class="tape-piece" id="tapeB" style="left:604px;top:26px;transform:rotate(36deg)"></div>
 </div>
@@ -25,13 +27,14 @@
 <script>
   // Colored rings turn to dark gray in the luma step, so everything below mid gray becomes solid ink.
   // The light gray ring tracks stay as a pale tone and turn into halftone dots.
-  card.shotFilter('weekrow', { table: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.02, 0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.4, 0.5, 0.6, 0.9, 1] });
+  card.shotFilter('weekrow', { blur: 1, table: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0.4, 0.6, 0.9, 1] });
   card.start({
     seed: 421,
     tilt: -0.9,
     setup: () => {
       const img = document.getElementById('img');
-      card.crop(img, { sx: 12, sy: 0, sw: 555, fullWidth: 1280, boxWidth: 684 });
+      card.crop(img, { sx: 8, sy: 10, sw: 440, fullWidth: 1280, boxWidth: 684 });
+      zine.wear(document.getElementById('title'), { seed: 422, patches: 16, scratches: 3, size: 3 });
     },
   });
 </script>

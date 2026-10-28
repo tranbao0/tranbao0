@@ -5,32 +5,31 @@
 <title>Activity</title>
 <link rel="stylesheet" href="zine.css">
 <style>
-  #page { padding: 168px 0 110px; }
-  #sheet { position: relative; margin: 0 72px; padding: 64px 56px 120px; transform: rotate(-0.7deg); }
+  #page { padding: 150px 0 40px; }
+  #sheet { position: relative; margin: 0 56px; padding: 40px 48px 54px; transform: rotate(-0.6deg); }
 
-  #head { position: relative; width: fit-content; height: 176px; margin: 0 0 14px -30px; padding: 0 56px; display: flex; align-items: center;
-          font-family: "Anton", sans-serif; font-size: 148px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(0.6deg); white-space: nowrap; }
-  #sub { display: flex; align-items: center; justify-content: space-between; margin: 0 0 40px 6px; }
-  #sub .line { font-size: 62px; transform: rotate(-0.8deg); }
-  #copy { position: relative; padding: 14px 30px 8px; text-align: center; font-family: "Rubik Mono One", sans-serif; font-size: 56px; line-height: 1.2;
-          transform: rotate(3deg); margin-right: 6px; }
+  #top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  #head { position: relative; width: fit-content; height: 124px; margin: 0 0 6px -22px; padding: 0 40px; display: flex; align-items: center;
+          font-family: "Anton", sans-serif; font-size: 98px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(0.5deg); white-space: nowrap; }
+  #top .line { font-size: 64px; line-height: 1; margin-left: 4px; transform: rotate(-0.6deg); }
+  #copy { position: relative; padding: 12px 22px 6px; text-align: center; font-family: "Rubik Mono One", sans-serif; font-size: 56px; line-height: 1.2;
+          transform: rotate(3deg); margin: 0 6px 0 0; }
   #copy small { display: block; font-size: 56px; }
 
-  #graph { position: relative; margin-bottom: 26px; }
+  #graph { position: relative; }
   #graph svg { display: block; overflow: visible; }
   .month { position: absolute; top: 0; font-family: "Anton", sans-serif; font-size: 56px; line-height: 1; }
-  #legend { display: flex; align-items: center; gap: 22px; justify-content: flex-end; font-size: 56px; margin-top: 8px; }
+  #legend { display: flex; align-items: center; justify-content: flex-end; gap: 18px; margin: 0 4px 6px 0; font-size: 60px; line-height: 1.1; transform: rotate(-0.4deg); }
   #legend svg { overflow: visible; }
 
-  .fold { position: absolute; left: -10px; right: -10px; height: 26px; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.32) 55%, rgba(0,0,0,.5) 58%, rgba(0,0,0,0)); }
-
-  #langhead { position: relative; width: fit-content; height: 128px; margin: 62px 0 28px -30px; padding: 0 50px; display: flex; align-items: center;
-              font-family: "Anton", sans-serif; font-size: 100px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(-0.8deg); }
-  .lang { display: flex; align-items: center; height: 100px; margin-bottom: 14px; }
-  .lang .name { flex: none; width: 380px; font-size: 62px; line-height: 1; padding-left: 8px; }
-  .lang .room { position: relative; flex: 1; height: 100px; }
-  .lang .bar { position: absolute; left: 0; top: 4px; height: 92px; }
-  .lang .pct { position: absolute; top: 12px; font-family: "Permanent Marker", cursive; font-size: 72px; line-height: 1; white-space: nowrap; }
+  #mid { margin-bottom: 10px; }
+  #langhead { position: relative; width: fit-content; height: 112px; margin-left: -22px; padding: 0 46px; display: flex; align-items: center;
+              font-family: "Anton", sans-serif; font-size: 88px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(-0.8deg); }
+  .lang { display: flex; align-items: center; height: 72px; margin-bottom: 4px; }
+  .lang .name { flex: none; width: var(--name-width, 380px); font-size: var(--name-size, 62px); white-space: nowrap; line-height: 1; padding-left: 8px; }
+  .lang .room { position: relative; flex: 1; height: 72px; }
+  .lang .bar { position: absolute; left: 0; top: 2px; height: 68px; }
+  .lang .pct { position: absolute; top: 4px; font-family: "Permanent Marker", cursive; font-size: 68px; line-height: 1; white-space: nowrap; }
 
   .tape-piece { position: absolute; width: 250px; height: 84px; }
 </style>
@@ -40,22 +39,31 @@
   <div class="track" id="track">TRACK 05 - Activity</div>
 
   <div id="sheet">
-    <div id="head"></div>
-    <div id="sub"><div class="line">in the last year</div><div id="copy" class="stamp double"></div></div>
+    <div id="top">
+      <div><div id="head"></div><div class="line">in the last year</div></div>
+      <div id="copy" class="stamp double"></div>
+    </div>
 
     <div id="graph"></div>
+
     <div id="legend"></div>
 
-    <div id="langhead">TOP LANGUAGES</div>
+    <div id="mid"><div id="langhead">TOP LANGUAGES</div></div>
     <div id="langs"></div>
   </div>
 
-  <div class="tape-piece" id="tapeA" style="left:1250px;top:120px;transform:rotate(38deg)"></div>
-  <div class="tape-piece" id="tapeB" style="left:18px;top:1400px;transform:rotate(36deg)"></div>
+  <div class="tape-piece" id="tapeA" style="left:1330px;top:84px;transform:rotate(38deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:-60px;top:1100px;transform:rotate(36deg)"></div>
 </div>
 <script src="parts.js"></script>
 <script>
   const SVG = 'http://www.w3.org/2000/svg';
+
+  function svgEl(name, attrs = {}) {
+    const el = document.createElementNS(SVG, name);
+    for (const [key, value] of Object.entries(attrs)) el.setAttribute(key, value);
+    return el;
+  }
 
   // Rough ink blot of a given diameter: a ring of slightly uneven radii, like a rubber stamp pressed on paper.
   function blot(rand, cx, cy, diameter) {
@@ -66,28 +74,30 @@
       const r = (diameter / 2) * (0.86 + rand() * 0.28);
       points.push(`${(cx + Math.cos(a) * r).toFixed(1)},${(cy + Math.sin(a) * r).toFixed(1)}`);
     }
-    return `<polygon points="${points.join(' ')}" fill="#000"/>`;
+    return svgEl('polygon', { points: points.join(' '), fill: '#000' });
   }
 
   // Blot diameters for the five GitHub levels: NONE to FOURTH_QUARTILE.
-  const SIZES = [5, 15, 20, 24, 28];
+  const SIZES = [5, 13, 18, 22, 26];
+  // The legend shows the lightest level larger, so its first dot stays visible on a phone.
+  const LEGEND_SIZES = [11, 14, 18, 22, 26];
 
   function drawGraph(host, data, width) {
     const cols = data.weeks.length;
     const pitchX = Math.floor(width / cols);
-    const pitchY = 40;
-    const top = 76;
+    const pitchY = 30;
+    const top = 64;
     const rand = zine.rng(77);
-    let marks = '';
+    const svg = svgEl('svg', { width, height: top + 7 * pitchY });
     data.weeks.forEach((week, col) => {
       for (const day of week) {
         const cx = col * pitchX + pitchX / 2 + (rand() - 0.5) * 2;
         const cy = top + day.weekday * pitchY + pitchY / 2 + (rand() - 0.5) * 2;
-        marks += blot(rand, cx, cy, SIZES[day.level]);
+        svg.appendChild(blot(rand, cx, cy, SIZES[day.level]));
       }
     });
     host.style.height = `${top + 7 * pitchY}px`;
-    host.innerHTML = `<svg width="${width}" height="${top + 7 * pitchY}">${marks}</svg>`;
+    host.appendChild(svg);
     for (const m of data.months) {
       const el = document.createElement('div');
       el.className = 'month';
@@ -99,35 +109,66 @@
 
   function drawLegend(host) {
     const rand = zine.rng(78);
-    const dots = SIZES.map((s, i) => `<svg width="34" height="34">${blot(rand, 17, 17, SIZES[i])}</svg>`).join('');
-    host.innerHTML = `<span>less</span>${dots}<span>more</span>`;
+    const word = (text) => Object.assign(document.createElement('span'), { textContent: text });
+    host.appendChild(word('less'));
+    for (const size of LEGEND_SIZES) {
+      const svg = svgEl('svg', { width: 30, height: 30 });
+      svg.appendChild(blot(rand, 15, 15, size));
+      host.appendChild(svg);
+    }
+    host.appendChild(word('more'));
   }
 
+  // One row for each language. A bar is as long as the rounded percent that the row shows, so equal numbers give equal bars.
   function drawLanguages(host, languages) {
-    const max = Math.max(...languages.map((l) => l.percent));
-    languages.forEach((lang, i) => {
-      const room = host.clientWidth - 380 - 200;
+    const rows = languages.map((lang, i) => {
       const row = document.createElement('div');
       row.className = 'lang';
-      row.innerHTML = `<div class="name">${lang.name}</div><div class="room"><div class="bar"></div><div class="pct">${lang.percent}%</div></div>`;
-      host.appendChild(row);
-      const width = Math.max(70, Math.round((lang.percent / max) * room));
-      const bar = row.querySelector('.bar');
-      bar.style.width = `${width}px`;
-      row.querySelector('.pct').style.left = `${width + 22}px`;
       row.style.transform = `rotate(${[-0.5, 0.4, -0.3, 0.6, -0.4][i % 5]}deg)`;
-      row.bar = bar;
+      const name = Object.assign(document.createElement('div'), { className: 'name', textContent: lang.name });
+      const room = document.createElement('div');
+      room.className = 'room';
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      const pct = Object.assign(document.createElement('div'), { className: 'pct', textContent: `${lang.percent}%` });
+      room.append(bar, pct);
+      row.append(name, room);
+      host.appendChild(row);
+      return { lang, name, bar, pct };
     });
-    return [...host.children].map((r) => r.bar);
+    // The label column fits the longest name, and the type shrinks a little if a name is very long.
+    let size = 62;
+    const widest = () => Math.max(...rows.map((r) => r.name.scrollWidth));
+    host.style.setProperty('--name-size', `${size}px`);
+    host.style.setProperty('--name-width', 'auto');
+    while (widest() > 560 && size > 56) host.style.setProperty('--name-size', `${--size}px`);
+    const nameWidth = Math.max(380, widest() + 24);
+    host.style.setProperty('--name-width', `${nameWidth}px`);
+    const room = host.clientWidth - nameWidth - 190;
+    const max = Math.max(1, ...languages.map((l) => l.percent));
+    for (const { lang, bar, pct } of rows) {
+      const width = Math.max(24, Math.round((lang.percent / max) * room));
+      bar.style.width = `${width}px`;
+      pct.style.left = `${width + 22}px`;
+    }
+    return rows.map((r) => r.bar);
+  }
+
+  // Shrinks the type of the black total bar until the bar and the date stamp fit on one row.
+  function fitTotal(head, stamp, row, base) {
+    let size = base;
+    head.style.fontSize = `${size}px`;
+    while (head.offsetWidth + stamp.offsetWidth + 20 > row.clientWidth && size > 60) head.style.fontSize = `${--size}px`;
   }
 
   zine.ready(['Anton', 'Special Elite', 'Permanent Marker', 'Rubik Mono One'], () => {
     const $ = (id) => document.getElementById(id);
     const data = window.PAGE_DATA;
-    $('head').textContent = `${data.total} CONTRIBUTIONS`;
-    $('copy').innerHTML = `COPY DATE<small>${data.copyDate}</small>`;
+    $('head').textContent = `${data.total} ${data.total === 1 ? 'CONTRIBUTION' : 'CONTRIBUTIONS'}`;
+    $('copy').append('COPY DATE', Object.assign(document.createElement('small'), { textContent: data.copyDate }));
+    fitTotal($('head'), $('copy'), $('top'), 98);
     const sheet = $('sheet');
-    const graphWidth = sheet.clientWidth - 112;
+    const graphWidth = sheet.clientWidth - 96;
     drawGraph($('graph'), data, graphWidth);
     drawLegend($('legend'));
     const bars = drawLanguages($('langs'), data.languages);
@@ -136,18 +177,12 @@
     zine.paper($('head'), { seed: 52, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
     zine.paper($('langhead'), { seed: 53, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
     bars.forEach((bar, i) => zine.paper(bar, { seed: 60 + i, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } }));
-    zine.wear($('copy'), { seed: 54, patches: 24, size: 3 });
+    zine.wear($('copy'), { seed: 54, patches: 10, scratches: 4, size: 2 });
     zine.track($('track'), { seed: 5 });
     zine.tape($('tapeA'), { seed: 6 });
     zine.tape($('tapeB'), { seed: 7 });
 
-    const fold = document.createElement('div');
-    fold.className = 'fold';
-    const legend = $('legend');
-    fold.style.top = `${legend.offsetTop + legend.offsetHeight + 28}px`;
-    sheet.appendChild(fold);
-
-    $('tapeB').style.top = `${$('page').offsetHeight - 160}px`;
+    $('tapeB').style.top = `${$('page').offsetHeight - 90}px`;
   });
 </script>
 </body>

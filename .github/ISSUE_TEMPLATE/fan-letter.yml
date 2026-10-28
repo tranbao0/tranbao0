@@ -1,5 +1,5 @@
 name: Fan letter
-description: Say hi, share a song, or tell me about a bug in one of my projects.
+description: Say hi or share a song.
 title: "Fan letter: "
 labels: ["fan-letter"]
 body:
