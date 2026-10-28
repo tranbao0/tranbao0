@@ -22,7 +22,7 @@
 <p align="center"><a href="https://github.com/tranbao0/FiTTTT"><img src="assets/card-fitttt.png" alt="FiTTTT: built in 3 days on a borrowed Mac. SwiftUI, Firebase. An empty photo frame says: no screenshot, the Mac went home. Opens the repo." width="320"></a><a href="https://github.com/tranbao0/Beautiful-Nail"><img src="assets/card-beautiful-nail.png" alt="Beautiful Nail: salon booking, built to stop double bookings. Spring Boot, SQLite. Opens the repo." width="320"></a></p>
 
 <p align="center">
-<img src="assets/activity.png" alt="Track 05, Activity. 624 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 9%, Swift 6%. Copied 2026-10-28." width="640">
+<img src="assets/activity.png" alt="Track 05, Activity. 628 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 9%, Swift 6%. Copied 2026-10-28." width="640">
 </p>
 
 <p align="center">
