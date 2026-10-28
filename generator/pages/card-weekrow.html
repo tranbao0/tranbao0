@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weekrow card</title>
+<link rel="stylesheet" href="zine.css">
+<link rel="stylesheet" href="card.css">
+<style>
+  .shot img { filter: url(#weekrow); }
+</style>
+</head>
+<body>
+<div id="page">
+  <div id="sheet">
+    <div class="shot"><img id="img" src="../sources/weekrow/panel.png" alt="Weekrow week header with one progress ring per course"></div>
+    <div id="name">Weekrow</div>
+    <div id="caption">Your Canvas week<br>as one to-do list</div>
+    <div id="tech">TypeScript, Preact, WXT</div>
+  </div>
+  <div class="tape-piece" id="tapeA" style="left:-34px;top:30px;transform:rotate(-38deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:604px;top:26px;transform:rotate(36deg)"></div>
+</div>
+<script src="parts.js"></script>
+<script src="card.js"></script>
+<script>
+  // Colored rings turn to dark gray in the luma step, so everything below mid gray becomes solid ink.
+  // The light gray ring tracks stay as a pale tone and turn into halftone dots.
+  card.shotFilter('weekrow', { table: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0.02, 0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.4, 0.5, 0.6, 0.9, 1] });
+  card.start({
+    seed: 421,
+    tilt: -0.9,
+    setup: () => {
+      const img = document.getElementById('img');
+      card.crop(img, { sx: 12, sy: 0, sw: 555, fullWidth: 1280, boxWidth: 684 });
+    },
+  });
+</script>
+</body>
+</html>

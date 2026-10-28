@@ -1,0 +1,49 @@
+// Shared setup for the four project cards: the sheet, the name strip, the two pieces of tape,
+// and an SVG filter that turns a screenshot into high-contrast gray before the photocopy.
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+
+  // Defines an SVG filter named `id`. `table` maps gray in (0..1) to gray out. `morph` ('erode' or 'dilate') with
+  // `radius`, and `blur`, fatten thin dark or light strokes so they survive the copier.
+  function shotFilter(id, { table, morph, radius = 1, blur = 0 }) {
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('width', '0');
+    svg.setAttribute('height', '0');
+    svg.style.position = 'absolute';
+    const tv = table.join(' ');
+    svg.innerHTML = `<filter id="${id}" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
+      <feColorMatrix type="matrix" values="0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0 0 0 1 0"/>
+      ${blur ? `<feGaussianBlur stdDeviation="${blur}"/>` : ''}
+      ${morph ? `<feMorphology operator="${morph}" radius="${radius}"/>` : ''}
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="${tv}"/><feFuncG type="table" tableValues="${tv}"/><feFuncB type="table" tableValues="${tv}"/>
+      </feComponentTransfer>
+    </filter>`;
+    document.body.appendChild(svg);
+  }
+
+  // Places a source image so that the crop box (sx, sy, sw) of the full image fills `box` across its width.
+  function crop(img, { sx, sy, sw, fullWidth, boxWidth, left = 0, top = 0 }) {
+    const k = boxWidth / sw;
+    img.style.width = `${fullWidth * k}px`;
+    img.style.left = `${left - sx * k}px`;
+    img.style.top = `${top - sy * k}px`;
+    return k;
+  }
+
+  async function start({ seed, tilt, shotTilt, setup }) {
+    if (tilt !== undefined) $('sheet').style.setProperty('--tilt', `${tilt}deg`);
+    if (shotTilt !== undefined) document.querySelector('.shot').style.setProperty('--shot-tilt', `${shotTilt}deg`);
+    await Promise.all([...document.images].map((img) => img.decode()));
+    await zine.ready(['Anton', 'Special Elite', 'Permanent Marker'], () => {
+      zine.paper($('sheet'), { seed, sides: { top: 'cut', right: 'cut', bottom: 'torn', left: 'cut' } });
+      zine.paper($('name'), { seed: seed + 1, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
+      zine.tape($('tapeA'), { seed: seed + 2 });
+      zine.tape($('tapeB'), { seed: seed + 3 });
+      if (setup) setup();
+    });
+  }
+
+  window.card = { shotFilter, crop, start };
+})();

@@ -1,0 +1,15 @@
+/* Project cards: an 800px wide cut-out sheet taped onto black. All four cards share this height. */
+body { width: 800px; }
+#page { width: 800px; height: 1010px; }
+
+#sheet { position: absolute; left: 26px; top: 62px; width: 748px; height: 916px; padding: 30px 26px 0; transform: rotate(var(--tilt, -0.8deg)); }
+
+.shot { position: relative; width: 696px; height: 470px; overflow: hidden; background: #fff; border: 6px solid #000; transform: rotate(var(--shot-tilt, 0.5deg)); }
+.shot img { position: absolute; display: block; max-width: none; }
+
+#name { position: relative; width: fit-content; height: 122px; margin: 28px 0 14px -14px; padding: 0 42px 0 38px; display: flex; align-items: center;
+        font-family: "Anton", sans-serif; font-size: 96px; line-height: 1; color: #fff; letter-spacing: 2px; white-space: nowrap; transform: rotate(0.6deg); }
+#caption { height: 132px; white-space: nowrap; font-family: "Anton", sans-serif; font-size: 56px; line-height: 66px; letter-spacing: -1px; }
+#tech { margin-top: 8px; font-size: 56px; line-height: 64px; white-space: nowrap; -webkit-text-stroke: 1.4px #000; }
+
+.tape-piece { position: absolute; width: 230px; height: 78px; }

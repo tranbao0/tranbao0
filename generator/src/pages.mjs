@@ -10,15 +10,15 @@ export const pagesDir = path.join(root, 'pages');
 export const assetsDir = path.resolve(root, '..', 'assets');
 
 // Renders a page layer and runs it through the photocopy filter. Returns a palette PNG buffer.
-async function copyLayer(renderer, file, { layer, transparent, seed }) {
-  const png = await renderer.render(path.join(pagesDir, file), { layer, transparent });
+async function copyLayer(renderer, file, { layer, transparent, seed, width, data }) {
+  const png = await renderer.render(path.join(pagesDir, file), { layer, transparent, width, data });
   const copy = photocopy(await decodeRgba(png), { seed });
   return encodePalettePng(copy);
 }
 
-// A page that is one still image.
-export async function buildStatic(renderer, { file, out, seed }) {
-  const png = await copyLayer(renderer, file, { layer: 'all', transparent: false, seed });
+// A page that is one still image. `width` is 1600 for full pages and 800 for half-width cards and tags.
+export async function buildStatic(renderer, { file, out, seed, width = 1600, data }) {
+  const png = await copyLayer(renderer, file, { layer: 'all', transparent: false, seed, width, data });
   await writeFile(path.join(assetsDir, out), png);
   return [{ path: path.join(assetsDir, out), bytes: png.length }];
 }

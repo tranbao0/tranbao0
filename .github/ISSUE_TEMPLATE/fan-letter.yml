@@ -1,0 +1,16 @@
+name: Fan letter
+description: Say hi, share a song, or tell me about a bug in one of my projects.
+title: "Fan letter: "
+labels: ["fan-letter"]
+body:
+  - type: textarea
+    id: letter
+    attributes:
+      label: Your letter
+      placeholder: "Dear Bao,"
+    validations:
+      required: true
+  - type: input
+    id: song
+    attributes:
+      label: A song I should hear (optional)

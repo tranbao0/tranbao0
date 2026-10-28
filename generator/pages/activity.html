@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Activity</title>
+<link rel="stylesheet" href="zine.css">
+<style>
+  #page { padding: 168px 0 110px; }
+  #sheet { position: relative; margin: 0 72px; padding: 64px 56px 120px; transform: rotate(-0.7deg); }
+
+  #head { position: relative; width: fit-content; height: 176px; margin: 0 0 14px -30px; padding: 0 56px; display: flex; align-items: center;
+          font-family: "Anton", sans-serif; font-size: 148px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(0.6deg); white-space: nowrap; }
+  #sub { display: flex; align-items: center; justify-content: space-between; margin: 0 0 40px 6px; }
+  #sub .line { font-size: 62px; transform: rotate(-0.8deg); }
+  #copy { position: relative; padding: 14px 30px 8px; text-align: center; font-family: "Rubik Mono One", sans-serif; font-size: 56px; line-height: 1.2;
+          transform: rotate(3deg); margin-right: 6px; }
+  #copy small { display: block; font-size: 56px; }
+
+  #graph { position: relative; margin-bottom: 26px; }
+  #graph svg { display: block; overflow: visible; }
+  .month { position: absolute; top: 0; font-family: "Anton", sans-serif; font-size: 56px; line-height: 1; }
+  #legend { display: flex; align-items: center; gap: 22px; justify-content: flex-end; font-size: 56px; margin-top: 8px; }
+  #legend svg { overflow: visible; }
+
+  .fold { position: absolute; left: -10px; right: -10px; height: 26px; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.32) 55%, rgba(0,0,0,.5) 58%, rgba(0,0,0,0)); }
+
+  #langhead { position: relative; width: fit-content; height: 128px; margin: 62px 0 28px -30px; padding: 0 50px; display: flex; align-items: center;
+              font-family: "Anton", sans-serif; font-size: 100px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(-0.8deg); }
+  .lang { display: flex; align-items: center; height: 100px; margin-bottom: 14px; }
+  .lang .name { flex: none; width: 380px; font-size: 62px; line-height: 1; padding-left: 8px; }
+  .lang .room { position: relative; flex: 1; height: 100px; }
+  .lang .bar { position: absolute; left: 0; top: 4px; height: 92px; }
+  .lang .pct { position: absolute; top: 12px; font-family: "Permanent Marker", cursive; font-size: 72px; line-height: 1; white-space: nowrap; }
+
+  .tape-piece { position: absolute; width: 250px; height: 84px; }
+</style>
+</head>
+<body>
+<div id="page">
+  <div class="track" id="track">TRACK 05 - Activity</div>
+
+  <div id="sheet">
+    <div id="head"></div>
+    <div id="sub"><div class="line">in the last year</div><div id="copy" class="stamp double"></div></div>
+
+    <div id="graph"></div>
+    <div id="legend"></div>
+
+    <div id="langhead">TOP LANGUAGES</div>
+    <div id="langs"></div>
+  </div>
+
+  <div class="tape-piece" id="tapeA" style="left:1250px;top:120px;transform:rotate(38deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:18px;top:1400px;transform:rotate(36deg)"></div>
+</div>
+<script src="parts.js"></script>
+<script>
+  const SVG = 'http://www.w3.org/2000/svg';
+
+  // Rough ink blot of a given diameter: a ring of slightly uneven radii, like a rubber stamp pressed on paper.
+  function blot(rand, cx, cy, diameter) {
+    const n = 11;
+    const points = [];
+    for (let k = 0; k < n; k++) {
+      const a = (k / n) * Math.PI * 2 + rand() * 0.25;
+      const r = (diameter / 2) * (0.86 + rand() * 0.28);
+      points.push(`${(cx + Math.cos(a) * r).toFixed(1)},${(cy + Math.sin(a) * r).toFixed(1)}`);
+    }
+    return `<polygon points="${points.join(' ')}" fill="#000"/>`;
+  }
+
+  // Blot diameters for the five GitHub levels: NONE to FOURTH_QUARTILE.
+  const SIZES = [5, 15, 20, 24, 28];
+
+  function drawGraph(host, data, width) {
+    const cols = data.weeks.length;
+    const pitchX = Math.floor(width / cols);
+    const pitchY = 40;
+    const top = 76;
+    const rand = zine.rng(77);
+    let marks = '';
+    data.weeks.forEach((week, col) => {
+      for (const day of week) {
+        const cx = col * pitchX + pitchX / 2 + (rand() - 0.5) * 2;
+        const cy = top + day.weekday * pitchY + pitchY / 2 + (rand() - 0.5) * 2;
+        marks += blot(rand, cx, cy, SIZES[day.level]);
+      }
+    });
+    host.style.height = `${top + 7 * pitchY}px`;
+    host.innerHTML = `<svg width="${width}" height="${top + 7 * pitchY}">${marks}</svg>`;
+    for (const m of data.months) {
+      const el = document.createElement('div');
+      el.className = 'month';
+      el.textContent = m.label;
+      el.style.left = `${m.col * pitchX}px`;
+      host.appendChild(el);
+    }
+  }
+
+  function drawLegend(host) {
+    const rand = zine.rng(78);
+    const dots = SIZES.map((s, i) => `<svg width="34" height="34">${blot(rand, 17, 17, SIZES[i])}</svg>`).join('');
+    host.innerHTML = `<span>less</span>${dots}<span>more</span>`;
+  }
+
+  function drawLanguages(host, languages) {
+    const max = Math.max(...languages.map((l) => l.percent));
+    languages.forEach((lang, i) => {
+      const room = host.clientWidth - 380 - 200;
+      const row = document.createElement('div');
+      row.className = 'lang';
+      row.innerHTML = `<div class="name">${lang.name}</div><div class="room"><div class="bar"></div><div class="pct">${lang.percent}%</div></div>`;
+      host.appendChild(row);
+      const width = Math.max(70, Math.round((lang.percent / max) * room));
+      const bar = row.querySelector('.bar');
+      bar.style.width = `${width}px`;
+      row.querySelector('.pct').style.left = `${width + 22}px`;
+      row.style.transform = `rotate(${[-0.5, 0.4, -0.3, 0.6, -0.4][i % 5]}deg)`;
+      row.bar = bar;
+    });
+    return [...host.children].map((r) => r.bar);
+  }
+
+  zine.ready(['Anton', 'Special Elite', 'Permanent Marker', 'Rubik Mono One'], () => {
+    const $ = (id) => document.getElementById(id);
+    const data = window.PAGE_DATA;
+    $('head').textContent = `${data.total} CONTRIBUTIONS`;
+    $('copy').innerHTML = `COPY DATE<small>${data.copyDate}</small>`;
+    const sheet = $('sheet');
+    const graphWidth = sheet.clientWidth - 112;
+    drawGraph($('graph'), data, graphWidth);
+    drawLegend($('legend'));
+    const bars = drawLanguages($('langs'), data.languages);
+
+    zine.paper(sheet, { seed: 51, sides: { top: 'cut', right: 'cut', bottom: 'torn', left: 'cut' } });
+    zine.paper($('head'), { seed: 52, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
+    zine.paper($('langhead'), { seed: 53, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
+    bars.forEach((bar, i) => zine.paper(bar, { seed: 60 + i, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } }));
+    zine.wear($('copy'), { seed: 54, patches: 24, size: 3 });
+    zine.track($('track'), { seed: 5 });
+    zine.tape($('tapeA'), { seed: 6 });
+    zine.tape($('tapeB'), { seed: 7 });
+
+    const fold = document.createElement('div');
+    fold.className = 'fold';
+    const legend = $('legend');
+    fold.style.top = `${legend.offsetTop + legend.offsetHeight + 28}px`;
+    sheet.appendChild(fold);
+
+    $('tapeB').style.top = `${$('page').offsetHeight - 160}px`;
+  });
+</script>
+</body>
+</html>

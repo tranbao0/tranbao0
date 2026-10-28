@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Title Track</title>
+<link rel="stylesheet" href="zine.css">
+<style>
+  #page { height: 410px; }
+  #heading { position: absolute; left: 72px; top: 178px; font-family: "Anton", sans-serif; font-size: 200px; line-height: 1; letter-spacing: 4px; color: #fff; white-space: nowrap; transform: rotate(-0.8deg); transform-origin: 0 50%; }
+  .scribble { position: absolute; overflow: visible; pointer-events: none; }
+
+  #label { position: absolute; left: 940px; top: 96px; width: 540px; height: 250px; transform: rotate(3deg); }
+  #stampBox { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-4deg); font-family: "Rubik Mono One", sans-serif; font-size: 86px; line-height: 1; letter-spacing: 2px; padding: 20px 28px 10px 32px; border-width: 10px; }
+  .tape-piece { position: absolute; width: 190px; height: 70px; }
+</style>
+</head>
+<body>
+<div id="page">
+  <div class="track" id="track">TRACK 04 - Title Track</div>
+
+  <div id="heading">PROJECTS</div>
+
+  <div id="label">
+    <div class="stamp double" id="stampBox">TITLE</div>
+  </div>
+  <div class="tape-piece" id="tapeA" style="left:850px;top:96px;transform:rotate(-38deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:1340px;top:314px;transform:rotate(-34deg)"></div>
+</div>
+<script src="parts.js"></script>
+<script>
+  zine.ready(['Anton', 'Special Elite', 'Rubik Mono One'], () => {
+    const $ = (id) => document.getElementById(id);
+    zine.track($('track'), { seed: 5 });
+    zine.paper($('label'), { seed: 481, sides: { top: 'cut', right: 'torn', bottom: 'cut', left: 'torn' } });
+    zine.tape($('tapeA'), { seed: 482 });
+    zine.tape($('tapeB'), { seed: 483 });
+    zine.wear($('stampBox'), { seed: 484, patches: 40, scratches: 5, size: 4 });
+  });
+</script>
+</body>
+</html>
