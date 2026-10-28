@@ -85,18 +85,49 @@ jobs:
         env:
           ARTIFACT_DIR: ${{ runner.temp }}/activity-page
         run: |
-          python3 - <<'PY'
-          import os, re, sys
+          python3 -I - <<'PY'
+          import os, re, struct, sys, zlib
           from pathlib import Path
+
+          def check_png(data):
+              if not data.startswith(b"\x89PNG\r\n\x1a\n") or len(data) > 350 * 1024:
+                  return "not a PNG of at most 350 KB"
+              pos, first = 8, True
+              while pos + 12 <= len(data):
+                  length, kind = struct.unpack(">I4s", data[pos:pos + 8])
+                  body = data[pos + 8:pos + 8 + length]
+                  crc = data[pos + 8 + length:pos + 12 + length]
+                  if len(body) != length or len(crc) != 4:
+                      return "a chunk is cut short"
+                  if struct.unpack(">I", crc)[0] != zlib.crc32(kind + body):
+                      return "a chunk has a bad CRC"
+                  if first:
+                      if kind != b"IHDR" or length != 13:
+                          return "the first chunk is not IHDR"
+                      width, height, _, color_type = struct.unpack(">IIBB", body[:10])
+                      if width != 1600 or not 800 <= height <= 2000 or color_type != 3:
+                          return "unexpected size or color type"
+                      first = False
+                  pos += 12 + length
+                  if kind == b"IEND":
+                      return None if pos == len(data) else "bytes after IEND"
+              return "no IEND chunk"
 
           artifact = Path(os.environ["ARTIFACT_DIR"])
           png = (artifact / "activity.png").read_bytes()
-          if not png.startswith(b"\x89PNG\r\n\x1a\n") or len(png) > 350 * 1024:
-              sys.exit("activity.png is not a PNG of at most 350 KB")
+          problem = check_png(png)
+          if problem:
+              sys.exit("activity.png is not valid: " + problem)
 
           alt = (artifact / "activity-alt.txt").read_text(encoding="utf-8").strip()
-          if not re.fullmatch(r"[A-Za-z0-9 ,.%:+#-]{1,500}", alt):
-              sys.exit("The alt text has characters that are not allowed")
+          language = r"[A-Za-z0-9 +#.-]{1,40} \d{1,3}%"
+          template = (
+              r"Track 05, Activity\. \d{1,7} contributions? in the last year\. "
+              r"Top languages: " + language + r"(, " + language + r"){0,4}\. "
+              r"Copied \d{4}-\d{2}-\d{2}\."
+          )
+          if len(alt) > 500 or not re.fullmatch(template, alt):
+              sys.exit("The alt text does not match the expected form")
 
           readme = Path("README.md")
           text = readme.read_text(encoding="utf-8")
