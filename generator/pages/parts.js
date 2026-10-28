@@ -181,10 +181,14 @@
       rim: fill === '#fff' ? '#8f8f8f' : fill,
       shadow: shadow ? { fill: '#555', x: 7, y: 8 } : null,
     });
-    el.querySelector('svg.shape').insertAdjacentHTML(
-      'beforeend',
-      `<text x="${padX + m.left}" y="${padY + m.ascent}" font-family="${font}" font-size="${m.size}" fill="${color}">${text}</text>`,
-    );
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', padX + m.left);
+    label.setAttribute('y', padY + m.ascent);
+    label.setAttribute('font-family', font);
+    label.setAttribute('font-size', m.size);
+    label.setAttribute('fill', color);
+    label.textContent = text;
+    el.querySelector('svg.shape').appendChild(label);
     return el;
   }
 
