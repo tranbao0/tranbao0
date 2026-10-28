@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SongRanking card</title>
+<link rel="stylesheet" href="zine.css">
+<link rel="stylesheet" href="card.css">
+<style>
+  .shot { background: #5c5c5c; }
+  .bar { position: absolute; left: 0; width: 684px; height: 134px; overflow: hidden; }
+  .bar img { filter: url(#bars); }
+</style>
+</head>
+<body>
+<div id="page">
+  <div id="sheet">
+    <div class="shot" id="shot"></div>
+    <div id="name">SongRanking</div>
+    <div id="caption">Music video view charts,<br>rendered as countdown videos</div>
+    <div id="tech">Python, ffmpeg, Gemini</div>
+  </div>
+  <div class="tape-piece" id="tapeA" style="left:-34px;top:30px;transform:rotate(-38deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:604px;top:26px;transform:rotate(36deg)"></div>
+</div>
+<script src="parts.js"></script>
+<script src="card.js"></script>
+<script>
+  // The project's own ranking bars, ranks 1 to 3, stacked on a dark frame. Colored numbers and pale text
+  // become white; the dark bar body becomes black.
+  card.shotFilter('bars', { morph: 'dilate', radius: 1, table: [0, 0, 0, 0, 0, 0, 0.1, 0.5, 0.9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] });
+  const shot = document.getElementById('shot');
+  [1, 2, 3].forEach((n, i) => {
+    shot.insertAdjacentHTML('beforeend', `<div class="bar" style="top:${22 + i * 142}px"><img data-n="${n}" src="../sources/songranking/overlay-${n}.png" alt="Ranking bar for rank ${n}"></div>`);
+  });
+  card.start({
+    seed: 431,
+    tilt: -0.7,
+    shotTilt: 0.4,
+    setup: () => {
+      document.querySelectorAll('.bar img').forEach((img) => card.crop(img, { sx: 0, sy: 1182, sw: 1130, fullWidth: 2560, boxWidth: 684 }));
+    },
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+// Builds the zine pages into ../assets/.
+// Usage: node build.mjs [page ...]   (no argument builds every page except activity)
+// The activity page reads live data from the GitHub API and needs GITHUB_TOKEN.
+import { mkdir } from 'node:fs/promises';
+import { openRenderer } from './src/render.mjs';
+import { assetsDir, buildCover, buildStatic } from './src/pages.mjs';
+import { buildActivity } from './src/activity.mjs';
+
+const card = (name, seed) => (r) => buildStatic(r, { file: `card-${name}.html`, out: `card-${name}.png`, seed, width: 800 });
+const tag = (name, seed) => (r) => buildStatic(r, { file: `tag-${name}.html`, out: `tag-${name}.png`, seed, width: 800 });
+
+const jobs = {
+  cover: (r) => buildCover(r),
+  profile: (r) => buildStatic(r, { file: 'profile.html', out: 'member-profile.png', seed: 202 }),
+  credits: (r) => buildStatic(r, { file: 'credits.html', out: 'credits.png', seed: 303 }),
+  projects: (r) => buildStatic(r, { file: 'projects.html', out: 'projects.png', seed: 404 }),
+  'card-weekrow': card('weekrow', 411),
+  'card-songranking': card('songranking', 412),
+  'card-fitttt': card('fitttt', 413),
+  'card-beautiful-nail': card('beautiful-nail', 414),
+  outro: (r) => buildStatic(r, { file: 'outro.html', out: 'outro.png', seed: 606 }),
+  'tag-fan-letter': tag('fan-letter', 611),
+  'tag-kofi': tag('kofi', 612),
+  activity: (r) => buildActivity(r),
+};
+
+const wanted = process.argv.slice(2);
+const names = wanted.length ? wanted : Object.keys(jobs).filter((name) => name !== 'activity');
+await mkdir(assetsDir, { recursive: true });
+const renderer = await openRenderer();
+try {
+  for (const name of names) {
+    if (!jobs[name]) throw new Error(`Unknown page: ${name}`);
+    for (const f of await jobs[name](renderer)) console.log(`${(f.bytes / 1024).toFixed(1)} KB  ${f.path}`);
+  }
+} finally {
+  await renderer.close();
+}

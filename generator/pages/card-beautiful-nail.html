@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Beautiful Nail card</title>
+<link rel="stylesheet" href="zine.css">
+<link rel="stylesheet" href="card.css">
+<style>
+  .shot img { filter: url(#nail); }
+</style>
+</head>
+<body>
+<div id="page">
+  <div id="sheet">
+    <div class="shot"><img id="img" src="../sources/beautiful-nail/slots.png" alt="Beautiful Nail open time slots for two stylists"></div>
+    <div id="name">Beautiful Nail</div>
+    <div id="caption">Salon booking, built to<br>stop double bookings</div>
+    <div id="tech">Spring Boot, SQLite</div>
+  </div>
+  <div class="tape-piece" id="tapeA" style="left:-34px;top:30px;transform:rotate(-38deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:604px;top:26px;transform:rotate(36deg)"></div>
+</div>
+<script src="parts.js"></script>
+<script src="card.js"></script>
+<script>
+  // The page is pale beige with light gray borders. Borders and slot outlines are pushed to ink, thin lines are fattened,
+  // and the beige panel turns into a light halftone.
+  card.shotFilter('nail', { table: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.7, 1] });
+  card.start({
+    seed: 441,
+    tilt: 0.8,
+    shotTilt: -0.5,
+    setup: () => {
+      const img = document.getElementById('img');
+      card.crop(img, { sx: 574, sy: 536, sw: 986, fullWidth: 2560, boxWidth: 684 });
+    },
+  });
+</script>
+</body>
+</html>

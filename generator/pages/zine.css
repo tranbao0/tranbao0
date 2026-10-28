@@ -1,0 +1,38 @@
+@font-face { font-family: "Anton"; src: url("../fonts/anton/Anton-Regular.ttf"); }
+@font-face { font-family: "Archivo Black"; src: url("../fonts/archivoblack/ArchivoBlack-Regular.ttf"); }
+@font-face { font-family: "Alfa Slab One"; src: url("../fonts/alfaslabone/AlfaSlabOne-Regular.ttf"); }
+@font-face { font-family: "Special Elite"; src: url("../fonts/specialelite/SpecialElite-Regular.ttf"); }
+@font-face { font-family: "Permanent Marker"; src: url("../fonts/permanentmarker/PermanentMarker-Regular.ttf"); }
+@font-face { font-family: "Rubik Mono One"; src: url("../fonts/rubikmonoone/RubikMonoOne-Regular.ttf"); }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #000; }
+body { width: 1600px; color: #000; font-family: "Special Elite", monospace; font-size: 58px; line-height: 1.2; }
+body.layer-title { background: transparent; }
+html:has(body.layer-title) { background: transparent; }
+
+#page { position: relative; width: 1600px; overflow: hidden; }
+
+/* Shared parts. Shapes are drawn by parts.js into an <svg class="shape"> at the back of each part. */
+.part { position: absolute; isolation: isolate; }
+.part > svg.shape { position: absolute; left: 0; top: 0; overflow: visible; z-index: -1; }
+
+/* Track label on a strip of tape, same place on every page. */
+.track {
+  left: 64px;
+  top: 64px;
+  height: 104px;
+  padding: 0 52px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 58px;
+  -webkit-text-stroke: 1.4px #000;
+  transform: rotate(-1.6deg);
+  transform-origin: 0 50%;
+}
+
+/* Rubber stamp: heavy border and ink that wears off in patches (see wear() in parts.js). */
+.stamp { border: 9px solid #000; border-radius: 10px; padding: 8px 26px 4px; white-space: nowrap; }
+.stamp.double { box-shadow: inset 0 0 0 6px #fff, inset 0 0 0 12px #000; }
+.layer-base .title-layer, .layer-title .base-layer { visibility: hidden; }
