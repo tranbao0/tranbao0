@@ -5,27 +5,25 @@
 <title>Credits</title>
 <link rel="stylesheet" href="zine.css">
 <style>
-  #page { padding: 168px 0 110px; }
-  #sheet { position: relative; margin: 0 64px; padding: 70px 56px 86px; transform: rotate(0.7deg); }
+  #page { padding: 168px 0 30px; }
+  #sheet { position: relative; margin: 0 64px; padding: 30px 40px 54px; transform: rotate(0.7deg); }
 
-  #head { position: relative; width: fit-content; height: 250px; margin: 0 0 50px -30px; padding: 0 60px; display: flex; align-items: center;
-          font-family: "Anton", sans-serif; font-size: 210px; line-height: 1; color: #fff; letter-spacing: 8px; transform: rotate(-0.8deg); }
+  #head { position: relative; width: fit-content; height: 172px; margin: 0 0 22px -26px; padding: 0 52px; display: flex; align-items: center;
+          font-family: "Anton", sans-serif; font-size: 146px; line-height: 1; color: #fff; letter-spacing: 7px; transform: rotate(-0.8deg); }
 
-  .group { position: relative; margin-bottom: 72px; }
-  .role { display: flex; align-items: baseline; gap: 22px; font-size: 58px; line-height: 1.1; -webkit-text-stroke: 1.2px #000; }
-  .role .rule { flex: 1; border-bottom: 5px dotted #000; transform: translateY(-6px); }
-  .stamps { display: flex; flex-direction: column; gap: 22px; padding: 22px 6px 0; }
-  .line { display: flex; gap: 36px; align-items: center; }
-  .line.in { padding-left: 120px; }
+  .group { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 14px; padding: 16px 0 18px; border-top: 5px dotted #000; }
+  .group:first-child { border-top: 0; padding-top: 0; }
+  .role { flex: none; margin-right: 12px; font-size: 58px; line-height: 1.1; -webkit-text-stroke: 1.2px #000; border-bottom: 5px solid #000; padding-bottom: 2px; }
 
   .s { position: relative; white-space: nowrap; line-height: 1; transform: rotate(var(--r, 0deg)) translateY(var(--y, 0px)); }
-  .s.a { font-family: "Archivo Black", sans-serif; font-size: 68px; padding: 16px 30px 12px; border: 9px solid #000; border-radius: 10px; }
-  .s.b { font-family: "Anton", sans-serif; font-size: 82px; letter-spacing: 3px; padding: 12px 32px 4px; border: 8px solid #000; border-radius: 8px; box-shadow: inset 0 0 0 5px #fff, inset 0 0 0 10px #000; }
-  .s.c { font-family: "Alfa Slab One", serif; font-size: 64px; padding: 18px 30px 12px; background: #000; color: #fff; border-radius: 6px; }
-  .s.d { font-family: "Rubik Mono One", sans-serif; font-size: 58px; padding: 20px 28px 14px; border: 9px solid #000; border-radius: 40px; }
-  .s.e { font-family: "Anton", sans-serif; font-size: 84px; letter-spacing: 4px; padding: 10px 32px 2px; background: #000; color: #fff; }
+  .s.a { font-family: "Archivo Black", sans-serif; font-size: 56px; -webkit-text-stroke: 1px #fff; padding: 12px 20px 8px; border: 8px solid #000; border-radius: 10px; }
+  .s.b { font-family: "Archivo Black", sans-serif; font-size: 56px; -webkit-text-stroke: 1px #fff; padding: 12px 22px 8px; border: 7px solid #000; border-radius: 8px; box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 8px #000; }
+  .s.c { font-family: "Alfa Slab One", serif; font-size: 56px; -webkit-text-stroke: 1px #000; padding: 13px 22px 8px; background: #000; color: #fff; border-radius: 6px; }
+  .s.d { font-family: "Rubik Mono One", sans-serif; font-size: 56px; padding: 14px 22px 9px; border: 8px solid #000; border-radius: 40px; }
+  .s.e { font-family: "Archivo Black", sans-serif; font-size: 56px; letter-spacing: 1px; -webkit-text-stroke: 1px #000; padding: 13px 22px 8px; background: #000; color: #fff; }
 
   .tape-piece { position: absolute; width: 250px; height: 84px; }
+</style>
 </style>
 </head>
 <body>
@@ -42,46 +40,85 @@
 </div>
 <script src="parts.js"></script>
 <script>
-  // Each group is a role and its stamp lines. The lines are fixed so no stamp sits alone on a line.
+  // Each group is a role followed by its stamps. Stamps wrap onto the next line under the role.
   const GROUPS = [
-    ['Languages', [[['Java', 'a'], ['Python', 'c'], ['TypeScript', 'b'], ['Swift', 'e']], [['JavaScript', 'b'], ['C', 'd'], ['SQL', 'c'], ['HTML/CSS', 'a']]]],
-    ['Frameworks', [[['Spring Boot', 'b'], ['React', 'c']], [['Preact', 'a'], ['Node.js + Express', 'e']], [['SwiftUI', 'a'], ['Jakarta Servlets/JSP', 'b']]]],
-    ['Data', [[['MySQL', 'a'], ['MongoDB', 'e']], [['SQLite', 'c'], ['Firebase', 'b']]]],
-    ['Tools', [[['Git', 'a'], ['GitHub Actions', 'b']], [['Playwright', 'c'], ['Vitest', 'a']], [['Cloudflare Workers', 'e'], ['Maven', 'c']]]],
+    ['Languages', [['Java', 'a'], ['Python', 'c'], ['TypeScript', 'b'], ['Swift', 'e'], ['JavaScript', 'b'], ['C', 'd'], ['SQL', 'c'], ['HTML/CSS', 'a']]],
+    ['Frameworks', [['Spring Boot', 'b'], ['React', 'c'], ['Preact', 'a'], ['Node.js + Express', 'e'], ['SwiftUI', 'a'], ['Jakarta Servlets/JSP', 'b']]],
+    ['Data', [['MySQL', 'a'], ['MongoDB', 'e'], ['SQLite', 'c'], ['Firebase', 'b']]],
+    ['Tools', [['Git', 'a'], ['GitHub Actions', 'b'], ['Playwright', 'c'], ['Vitest', 'a'], ['Cloudflare Workers', 'e'], ['Maven', 'c']]],
   ];
+
+  // Ink wear for a stamp. Patches and scratches stay in the outer ring (border and padding), so the letters keep every stroke.
+  function wearRing(el, seed) {
+    const rand = zine.rng(seed);
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    const ring = 20;
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'destination-out';
+    const onRing = () => {
+      const side = Math.floor(rand() * 4);
+      const along = rand();
+      const depth = rand() * ring;
+      return side === 0 ? [along * w, depth] : side === 1 ? [along * w, h - depth] : side === 2 ? [depth, along * h] : [w - depth, along * h];
+    };
+    for (let i = 0; i < 16; i++) {
+      const [x, y] = onRing();
+      const r = 1 + Math.pow(rand(), 2) * 5;
+      ctx.beginPath();
+      for (let k = 0; k < 7; k++) {
+        const a = (k / 7) * Math.PI * 2;
+        const rr = r * (0.6 + rand() * 0.8);
+        ctx[k ? 'lineTo' : 'moveTo'](x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+      }
+      ctx.fill();
+    }
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = '#000';
+    for (let i = 0; i < 3; i++) {
+      const [x, y] = onRing();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + (rand() - 0.5) * 50, y + (rand() - 0.5) * 6);
+      ctx.stroke();
+    }
+    const url = `url(${canvas.toDataURL()})`;
+    el.style.webkitMaskImage = url;
+    el.style.maskImage = url;
+  }
   zine.ready(['Anton', 'Archivo Black', 'Alfa Slab One', 'Special Elite', 'Rubik Mono One'], () => {
     const $ = (id) => document.getElementById(id);
     const rand = zine.rng(77);
     const host = $('groups');
     const stamps = [];
-    for (const [role, lines] of GROUPS) {
+    for (const [role, items] of GROUPS) {
       const g = document.createElement('div');
       g.className = 'group';
-      g.innerHTML = `<div class="role"><span>${role}</span><span class="rule"></span></div><div class="stamps"></div>`;
+      g.innerHTML = `<div class="role">${role}</div>`;
       host.appendChild(g);
-      lines.forEach((items, n) => {
-        const line = document.createElement('div');
-        line.className = n % 2 && items.length < 3 ? 'line in' : 'line';
-        g.querySelector('.stamps').appendChild(line);
-        for (const [text, kind] of items) {
-          const s = document.createElement('div');
-          s.className = `s ${kind}`;
-          s.textContent = text;
-          s.style.setProperty('--r', `${((rand() - 0.5) * 6).toFixed(2)}deg`);
-          s.style.setProperty('--y', `${Math.round((rand() - 0.5) * 12)}px`);
-          line.appendChild(s);
-          stamps.push(s);
-        }
-      });
+      for (const [text, kind] of items) {
+        const s = document.createElement('div');
+        s.className = `s ${kind}`;
+        s.textContent = text;
+        s.style.setProperty('--r', `${((rand() - 0.5) * 5).toFixed(2)}deg`);
+        s.style.setProperty('--y', `${Math.round((rand() - 0.5) * 8)}px`);
+        g.appendChild(s);
+        stamps.push(s);
+      }
     }
     zine.paper($('sheet'), { seed: 51, sides: { top: 'cut', right: 'cut', bottom: 'torn', left: 'cut' } });
     zine.paper($('head'), { seed: 52, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
     zine.track($('track'), { seed: 5 });
     zine.tape($('tapeA'), { seed: 6 });
     zine.tape($('tapeB'), { seed: 7 });
-    stamps.forEach((s, i) => zine.wear(s, { seed: 100 + i, patches: s.classList.contains('c') || s.classList.contains('e') ? 8 : 30, scratches: 3, size: s.classList.contains('c') || s.classList.contains('e') ? 2 : 4 }));
+    stamps.forEach((s, i) => wearRing(s, 100 + i));
     const sheet = $('sheet');
-    $('tapeB').style.top = `${sheet.offsetTop + sheet.offsetHeight - 70}px`;
+    $('tapeB').style.top = `${sheet.offsetTop + sheet.offsetHeight - 60}px`;
   });
 </script>
 </body>

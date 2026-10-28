@@ -5,32 +5,31 @@
 <title>Activity</title>
 <link rel="stylesheet" href="zine.css">
 <style>
-  #page { padding: 168px 0 110px; }
-  #sheet { position: relative; margin: 0 72px; padding: 64px 56px 120px; transform: rotate(-0.7deg); }
+  #page { padding: 150px 0 40px; }
+  #sheet { position: relative; margin: 0 56px; padding: 40px 48px 54px; transform: rotate(-0.6deg); }
 
-  #head { position: relative; width: fit-content; height: 176px; margin: 0 0 14px -30px; padding: 0 56px; display: flex; align-items: center;
-          font-family: "Anton", sans-serif; font-size: 148px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(0.6deg); white-space: nowrap; }
-  #sub { display: flex; align-items: center; justify-content: space-between; margin: 0 0 40px 6px; }
-  #sub .line { font-size: 62px; transform: rotate(-0.8deg); }
-  #copy { position: relative; padding: 14px 30px 8px; text-align: center; font-family: "Rubik Mono One", sans-serif; font-size: 56px; line-height: 1.2;
-          transform: rotate(3deg); margin-right: 6px; }
+  #top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+  #head { position: relative; width: fit-content; height: 124px; margin: 0 0 6px -22px; padding: 0 40px; display: flex; align-items: center;
+          font-family: "Anton", sans-serif; font-size: 98px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(0.5deg); white-space: nowrap; }
+  #top .line { font-size: 62px; line-height: 1; margin-left: 4px; transform: rotate(-0.6deg); }
+  #copy { position: relative; padding: 12px 22px 6px; text-align: center; font-family: "Rubik Mono One", sans-serif; font-size: 56px; line-height: 1.2;
+          transform: rotate(3deg); margin: 0 6px 0 0; }
   #copy small { display: block; font-size: 56px; }
 
-  #graph { position: relative; margin-bottom: 26px; }
+  #graph { position: relative; margin-bottom: 18px; }
   #graph svg { display: block; overflow: visible; }
   .month { position: absolute; top: 0; font-family: "Anton", sans-serif; font-size: 56px; line-height: 1; }
-  #legend { display: flex; align-items: center; gap: 22px; justify-content: flex-end; font-size: 56px; margin-top: 8px; }
+  #legend { display: flex; align-items: center; gap: 18px; font-size: 56px; margin-right: 4px; }
   #legend svg { overflow: visible; }
 
-  .fold { position: absolute; left: -10px; right: -10px; height: 26px; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.32) 55%, rgba(0,0,0,.5) 58%, rgba(0,0,0,0)); }
-
-  #langhead { position: relative; width: fit-content; height: 128px; margin: 62px 0 28px -30px; padding: 0 50px; display: flex; align-items: center;
-              font-family: "Anton", sans-serif; font-size: 100px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(-0.8deg); }
-  .lang { display: flex; align-items: center; height: 100px; margin-bottom: 14px; }
+  #mid { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  #langhead { position: relative; width: fit-content; height: 112px; margin-left: -22px; padding: 0 46px; display: flex; align-items: center;
+              font-family: "Anton", sans-serif; font-size: 88px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(-0.8deg); }
+  .lang { display: flex; align-items: center; height: 74px; margin-bottom: 6px; }
   .lang .name { flex: none; width: 380px; font-size: 62px; line-height: 1; padding-left: 8px; }
-  .lang .room { position: relative; flex: 1; height: 100px; }
-  .lang .bar { position: absolute; left: 0; top: 4px; height: 92px; }
-  .lang .pct { position: absolute; top: 12px; font-family: "Permanent Marker", cursive; font-size: 72px; line-height: 1; white-space: nowrap; }
+  .lang .room { position: relative; flex: 1; height: 74px; }
+  .lang .bar { position: absolute; left: 0; top: 2px; height: 70px; }
+  .lang .pct { position: absolute; top: 4px; font-family: "Permanent Marker", cursive; font-size: 68px; line-height: 1; white-space: nowrap; }
 
   .tape-piece { position: absolute; width: 250px; height: 84px; }
 </style>
@@ -40,18 +39,19 @@
   <div class="track" id="track">TRACK 05 - Activity</div>
 
   <div id="sheet">
-    <div id="head"></div>
-    <div id="sub"><div class="line">in the last year</div><div id="copy" class="stamp double"></div></div>
+    <div id="top">
+      <div><div id="head"></div><div class="line">in the last year</div></div>
+      <div id="copy" class="stamp double"></div>
+    </div>
 
     <div id="graph"></div>
-    <div id="legend"></div>
 
-    <div id="langhead">TOP LANGUAGES</div>
+    <div id="mid"><div id="langhead">TOP LANGUAGES</div><div id="legend"></div></div>
     <div id="langs"></div>
   </div>
 
-  <div class="tape-piece" id="tapeA" style="left:1250px;top:120px;transform:rotate(38deg)"></div>
-  <div class="tape-piece" id="tapeB" style="left:18px;top:1400px;transform:rotate(36deg)"></div>
+  <div class="tape-piece" id="tapeA" style="left:1330px;top:84px;transform:rotate(38deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:-60px;top:1100px;transform:rotate(36deg)"></div>
 </div>
 <script src="parts.js"></script>
 <script>
@@ -70,13 +70,13 @@
   }
 
   // Blot diameters for the five GitHub levels: NONE to FOURTH_QUARTILE.
-  const SIZES = [5, 15, 20, 24, 28];
+  const SIZES = [5, 13, 18, 22, 26];
 
   function drawGraph(host, data, width) {
     const cols = data.weeks.length;
     const pitchX = Math.floor(width / cols);
-    const pitchY = 40;
-    const top = 76;
+    const pitchY = 30;
+    const top = 64;
     const rand = zine.rng(77);
     let marks = '';
     data.weeks.forEach((week, col) => {
@@ -99,14 +99,14 @@
 
   function drawLegend(host) {
     const rand = zine.rng(78);
-    const dots = SIZES.map((s, i) => `<svg width="34" height="34">${blot(rand, 17, 17, SIZES[i])}</svg>`).join('');
+    const dots = SIZES.map((s, i) => `<svg width="30" height="30">${blot(rand, 15, 15, SIZES[i])}</svg>`).join('');
     host.innerHTML = `<span>less</span>${dots}<span>more</span>`;
   }
 
   function drawLanguages(host, languages) {
     const max = Math.max(...languages.map((l) => l.percent));
     languages.forEach((lang, i) => {
-      const room = host.clientWidth - 380 - 200;
+      const room = host.clientWidth - 380 - 190;
       const row = document.createElement('div');
       row.className = 'lang';
       row.innerHTML = `<div class="name">${lang.name}</div><div class="room"><div class="bar"></div><div class="pct">${lang.percent}%</div></div>`;
@@ -127,7 +127,7 @@
     $('head').textContent = `${data.total} CONTRIBUTIONS`;
     $('copy').innerHTML = `COPY DATE<small>${data.copyDate}</small>`;
     const sheet = $('sheet');
-    const graphWidth = sheet.clientWidth - 112;
+    const graphWidth = sheet.clientWidth - 96;
     drawGraph($('graph'), data, graphWidth);
     drawLegend($('legend'));
     const bars = drawLanguages($('langs'), data.languages);
@@ -141,13 +141,7 @@
     zine.tape($('tapeA'), { seed: 6 });
     zine.tape($('tapeB'), { seed: 7 });
 
-    const fold = document.createElement('div');
-    fold.className = 'fold';
-    const legend = $('legend');
-    fold.style.top = `${legend.offsetTop + legend.offsetHeight + 28}px`;
-    sheet.appendChild(fold);
-
-    $('tapeB').style.top = `${$('page').offsetHeight - 160}px`;
+    $('tapeB').style.top = `${$('page').offsetHeight - 90}px`;
   });
 </script>
 </body>
