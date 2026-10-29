@@ -20,7 +20,7 @@ test('the lamp and the jitter are gone', () => {
 const S = 5 / 60; // a wave step
 const F = 7.5 / 60; // a fan step
 const LEAD = 0.4;
-const W = 5 * S; // a wave: letters 1 to 5 hop, one per step
+const W = 6 * S; // a wave: letters 0 to 5 hop, one per step
 const waveStart = [LEAD + 3 * F + 20 / 60, LEAD + 3 * F + 20 / 60 + W + 3];
 
 // Reads the stops of a keyframe rule as [seconds, declarations] pairs.
@@ -33,7 +33,7 @@ const near = (a, b) => Math.abs(a - b) < 1e-3;
 
 test('every animated element repeats the same period, and that period is the whole cycle', () => {
   const durations = [...svg.matchAll(/animation: [\w-]+ ([\d.]+)s step-end infinite/g)].map((m) => m[1]);
-  assert.equal(durations.length, 6 + 5);
+  assert.equal(durations.length, 6 + 6);
   assert.equal(new Set(durations).size, 1);
   // lead, fan out, hold, wave, rest, wave, rest, fan in
   assert.ok(near(period(), 0.4 + 3 * F + 20 / 60 + W + 3 + W + 3 + 3 * F));
@@ -45,7 +45,7 @@ test('the motion is stop-motion and ends in a still title', () => {
   assert.doesNotMatch(svg, /ease|linear|<script/);
   assert.match(svg, /step-end/);
   assert.match(svg, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\* \{ animation: none !important; \}/);
-  assert.equal(svg.match(/@keyframes hop-/g).length, 5);
+  assert.equal(svg.match(/@keyframes hop-/g).length, 6);
 });
 
 test('no keyframe repeats a percentage, and the fan only slides the letters sideways', () => {
@@ -58,20 +58,21 @@ test('no keyframe repeats a percentage, and the fan only slides the letters side
   }
 });
 
-test('in every wave one letter hops per step, from left to right, and the first letter stays put', () => {
-  for (let i = 1; i < 6; i++) {
+test('in every wave one letter hops per step, from left to right, starting with the first letter', () => {
+  for (let i = 0; i < 6; i++) {
     const hop = stops(`hop-${i}`).filter(([, d]) => d.includes('translateY(-95px)'));
     assert.equal(hop.length, 2);
-    waveStart.forEach((w, n) => assert.ok(near(hop[n][0], w + (i - 1) * S), `hop ${i} wave ${n}`));
+    waveStart.forEach((w, n) => assert.ok(near(hop[n][0], w + i * S), `hop ${i} wave ${n}`));
     // a hop lasts one wave step and comes back down
     const all = stops(`hop-${i}`);
     assert.ok(near(all[2][0] - all[1][0], S));
     assert.match(all[2][1], /translateY\(0\)/);
   }
-  assert.doesNotMatch(svg, /hop-0|#l0 \.hop/);
   // no two letters hop in the same step
-  const starts = [1, 2, 3, 4, 5].map((i) => stops(`hop-${i}`)[1][0]);
-  assert.equal(new Set(starts.map((t) => t.toFixed(3))).size, 5);
+  const starts = [0, 1, 2, 3, 4, 5].map((i) => stops(`hop-${i}`).find(([, d]) => d.includes('translateY(-95px)'))[0]);
+  assert.equal(new Set(starts.map((t) => t.toFixed(3))).size, 6);
+  // letter i hops in step i of the first wave
+  assert.ok(starts.every((t, i) => near(t, waveStart[0] + i * S)));
 });
 
 test('the fan out and the fan in are the same steps in opposite order, 125 ms each', () => {
@@ -106,8 +107,10 @@ test('the build stops when a hopping letter would reach the header', async () =>
   assert.doesNotThrow(() => assertHopsClearOf(header, clear));
   const blocked = [{ x: 200, y: 400, width: 100 }, { x: 320, y: 100 + HOP - 10, width: 100 }];
   assert.throws(() => assertHopsClearOf(header, blocked), /letter 1 hops into the header/);
-  // The first letter never hops, so it may sit close under the header.
+  // The W (letter 0) hops over the header label on purpose, so it may sit close under the header.
   assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 200, y: 110, width: 100 }]));
+  // Only the W is exempt: the same box as the second letter stops the build.
+  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 200, y: 110, width: 100 }]), /letter 1 hops into the header/);
   // The margin is 4 px: a hop top exactly at the header bottom plus 4 passes, one pixel higher stops the build.
   const bottom = header.y + header.h;
   assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 320, y: bottom + 4 + HOP, width: 100 }]));
