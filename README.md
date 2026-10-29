@@ -19,7 +19,7 @@
 <p align="center"><a href="https://github.com/tranbao0/Simple-CanvasTasks"><img src="assets/card-weekrow.png" alt="Title track: Weekrow, your Canvas week as one to-do list. TypeScript, Preact, WXT. Stamped: made with spite. Opens the repo." width="320"></a><a href="https://github.com/tranbao0/SongRanking"><img src="assets/card-songranking.png" alt="SongRanking: music video view charts, rendered as countdown videos. Python, ffmpeg, Gemini. Stamped: made with spite. Opens the repo." width="320"></a></p>
 
 <p align="center">
-<img src="assets/activity.png" alt="Track 05, Activity. 635 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 9%, Swift 6%. Copied 2026-10-29. Track 06, Outro: Thanks to Neverland. And to everyone who read this far. See you at the next comeback. Tracklist: 01 We code Intro, 02 Member Profile, 03 Credits, 04 Title Track, 05 Activity, 06 Outro: Thanks to Neverland. Copyright 2026 Bao Tran." width="640">
+<img src="assets/activity.png" alt="Track 05, Activity. 637 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 10%, Swift 6%. Copied 2026-10-29. Track 06, Outro: Thanks to Neverland. And to everyone who read this far. See you at the next comeback. Tracklist: 01 We code Intro, 02 Member Profile, 03 Credits, 04 Title Track, 05 Activity, 06 Outro: Thanks to Neverland. Copyright 2026 Bao Tran." width="640">
 </p>
 
 <p align="center"><a href="https://github.com/tranbao0/tranbao0/issues/new?template=fan-letter.yml"><img src="assets/tag-fan-letter.png" alt="Send a fan letter. Opens a GitHub issue." width="320"></a><a href="https://ko-fi.com/baowows"><img src="assets/tag-kofi.png" alt="Support the next comeback on Ko-fi." width="320"></a></p>
