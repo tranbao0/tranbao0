@@ -6,7 +6,16 @@
 <link rel="stylesheet" href="zine.css">
 <link rel="stylesheet" href="card.css">
 <style>
-  #title { position: absolute; left: 430px; top: 240px; z-index: 2; font-family: "Anton", sans-serif; font-size: 52px; line-height: 1; letter-spacing: 4px; padding: 6px 16px 0 20px; border-width: 6px; background: #fff; transform: rotate(-4deg); }
+  /* This card is wide: the name and caption sit in a row on top, and the ring row of the screenshot runs under them across the sheet. */
+  .main { display: block; position: relative; height: 322px; }
+  .side { position: static; height: 86px; display: flex; align-items: flex-start; gap: 14px; }
+  #name { margin: 0 0 0 -10px; flex: none; }
+  #caption { margin-top: 0; }
+  .shot { position: absolute; left: 0; top: 90px; width: 710px; height: 228px; }
+  #open { right: 22px; bottom: 8px; }
+  #open span { display: none; }
+  #tech { margin-top: 6px; }
+  #title { position: absolute; left: 628px; top: 42px; z-index: 2; font-family: "Anton", sans-serif; font-size: 40px; line-height: 1; letter-spacing: 2px; padding: 6px 10px 0 12px; border-width: 6px; background: #fff; transform: rotate(-4deg); }
   .shot img { filter: url(#weekrow); }
 </style>
 </head>
@@ -28,13 +37,16 @@
 <script>
   // Colored rings turn to dark gray in the luma step, so everything below mid gray becomes solid ink.
   // The light gray ring tracks stay as a pale tone and turn into halftone dots.
-  card.shotFilter('weekrow', { blur: 0.5, morph: 'erode', radius: 0.5, table: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0.4, 0.6, 0.9, 1] });
+  card.shotFilter('weekrow', { blur: 0.5, morph: 'erode', radius: 0.5, table: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0.4, 0.5, 0.9, 1] });
   card.start({
     seed: 421,
     tilt: -0.9,
     setup: () => {
       const img = document.getElementById('img');
-      card.crop(img, { sx: 8, sy: 10, sw: 440, fullWidth: 1280, boxWidth: 350 });
+      // The crop keeps the three rings (HIST 205, BIO 110, MATH 221) and drops the week header and the This week row.
+      card.crop(img, { sx: 32, sy: 186, sw: 400, fullWidth: 1280, boxWidth: 700 });
+      document.querySelector('.shot').setAttribute('data-soft', '');
+      document.getElementById('sheet').appendChild(document.getElementById('open'));
     },
   });
 </script>
