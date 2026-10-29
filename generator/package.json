@@ -7,6 +7,7 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@tranbao0/printshop": "github:tranbao0/printshop#v1.0.0",
     "playwright": "1.64.1",
     "sharp": "0.35.5"
   }
