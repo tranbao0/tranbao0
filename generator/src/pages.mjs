@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { compositeGray, cropLayer, decodeGrayPng, encodePalettePng, inkBox } from '@tranbao0/printshop/core/encode';
 import { copyLayer, renderCopy } from '@tranbao0/printshop/core/pipeline';
-import { photocopy } from '@tranbao0/printshop/packs/zine';
+import { photocopy, photocopyDefaults } from '@tranbao0/printshop/packs/zine';
 import { assertHopsClearOf, coverSvg } from './cover-svg.mjs';
 import { projectsSvg, PROJECTS_LETTERS } from './projects-svg.mjs';
 
@@ -12,10 +12,21 @@ export const pagesDir = path.join(root, 'pages');
 export const assetsDir = path.resolve(root, '..', 'assets');
 
 // Every page goes through the photocopy look of printshop's zine pack.
-const copy = (renderer, file, { layer, transparent, seed, width, data }) =>
-  copyLayer(renderer, path.join(pagesDir, file), { layer, transparent, seed, width, data, filter: photocopy });
-const copyGray = (renderer, file, { layer, transparent, seed, width, data }) =>
-  renderCopy(renderer, path.join(pagesDir, file), { layer, transparent, seed, width, data, filter: photocopy });
+// The drum streaks of the look are counted per 1600 px of width. These pages count them over the whole page,
+// so a narrower page gets proportionally more streaks and keeps the same streak density as a full page.
+const PAGE_WIDTH = 1600;
+export const withStreakDensity = (width, filterOptions) => ({
+  toner: { ...photocopyDefaults.toner, streaks: (photocopyDefaults.toner.streaks * PAGE_WIDTH) / width },
+  ...filterOptions,
+});
+const copy = (renderer, file, { layer, transparent, seed, width = PAGE_WIDTH, data, filterOptions }) =>
+  copyLayer(renderer, path.join(pagesDir, file), {
+    layer, transparent, seed, width, data, filter: photocopy, filterOptions: withStreakDensity(width, filterOptions),
+  });
+const copyGray = (renderer, file, { layer, transparent, seed, width = PAGE_WIDTH, data, filterOptions }) =>
+  renderCopy(renderer, path.join(pagesDir, file), {
+    layer, transparent, seed, width, data, filter: photocopy, filterOptions: withStreakDensity(width, filterOptions),
+  });
 
 // A page that is one still image. `width` is 1600 for full pages and 800 for half-width cards and tags.
 export async function buildStatic(renderer, { file, out, seed, width = 1600, data }) {
