@@ -6,7 +6,7 @@
 //   LEAD                    bare paper
 //   fan out (3 steps)       one letter alone at the middle, a small cluster, every letter bunched, then all in place
 //   HOLD                    nothing moves
-//   jump wave               in step k letter k + 1 hops up and back down; the first letter stays put
+//   jump wave               in step k letter k hops up and back down, from the first letter to the last
 //   REST                    nothing moves
 //   jump wave               the same again
 //   REST                    nothing moves
@@ -83,7 +83,7 @@ function motionCss(letters) {
   const count = letters.length;
   const entrance = entranceSteps(count);
   const fanLength = entrance.length * FAN;
-  const waveLength = (count - 1) * STEP; // every letter but the first hops, one per step
+  const waveLength = count * STEP; // every letter hops, one per step
   const inPlace = LEAD + fanLength; // the fan out is done
   const waveStarts = Array.from({ length: WAVES }, (_, w) => inPlace + HOLD + w * (waveLength + REST));
   const fanInStart = waveStarts[WAVES - 1] + waveLength + REST;
@@ -113,26 +113,26 @@ function motionCss(letters) {
   @keyframes enter-${i} { ${frames.join(' ')} }
   #l${i} { animation: enter-${i} ${duration} step-end infinite; }`;
 
-    // The hop: letter i rises for step i - 1 of every wave.
-    if (hops(i)) {
-      const pulses = waveStarts.map((w) => [w + (i - 1) * STEP, w + i * STEP]);
-      css += `
+    // The hop: letter i rises for step i of every wave.
+    const pulses = waveStarts.map((w) => [w + i * STEP, w + (i + 1) * STEP]);
+    css += `
   ${pulseKeyframes(`hop-${i}`, pulses, period, `transform: translateY(${-HOP}px);`, 'transform: translateY(0);')}
   #l${i} .hop { animation: hop-${i} ${duration} step-end infinite; }`;
-    }
   });
 
   return css + REDUCED_MOTION_CSS;
 }
 
-// Which letters hop: every letter but the first, which sits right under the header.
-export const hops = (i) => i > 0;
+// The title, letter by letter, from the left.
+const TITLE = ['W', 'e', 'c', 'o', 'd', 'e'];
+// The W sits right under the header label and hops over it on purpose, so the header check skips it.
+const HOPS_OVER_HEADER = 'W';
 
-// Throws when a hopping letter, at the top of its hop, would touch the header box.
+// Throws when a hopping letter, at the top of its hop, would touch the header box. The W is exempt.
 export function assertHopsClearOf(header, letters, margin = 4) {
   if (!header || !(header.w > 0 && header.h > 0)) throw new Error('cover: the header box is missing or empty, so the hops cannot be checked');
   letters.forEach((l, i) => {
-    if (!hops(i)) return;
+    if (TITLE[i] === HOPS_OVER_HEADER) return;
     const top = l.y - HOP;
     const apart = l.x >= header.x + header.w + margin || l.x + l.width <= header.x - margin || top >= header.y + header.h + margin;
     if (!apart) throw new Error(`cover letter ${i} hops into the header: its top reaches y ${top}, the header ends at y ${Math.ceil(header.y + header.h)}`);
