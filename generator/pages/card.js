@@ -32,10 +32,18 @@
     return k;
   }
 
-  // Adds the `open repo` label and arrow to the bottom of the sheet.
+  // Adds the `open repo` label and arrow to the bottom of the text column.
   function addOpenRepo() {
-    $('sheet').insertAdjacentHTML('beforeend',
-      `<div id="open"><span>open repo</span><svg width="86" height="86" viewBox="0 0 130 130" fill="none" stroke="#000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><path d="M10 112 C 30 70, 70 40, 108 22"/><path d="M62 14 L 112 18 L 104 66"/></svg></div>`);
+    document.querySelector('.side').insertAdjacentHTML('beforeend',
+      `<div id="open"><span>open repo</span><svg width="62" height="62" viewBox="0 0 130 130" fill="none" stroke="#000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><path d="M10 112 C 30 70, 70 40, 108 22"/><path d="M62 14 L 112 18 L 104 66"/></svg></div>`);
+  }
+
+  // Shrinks the name until it fits the text column, so a long project name never spills out.
+  function fitName() {
+    const name = $('name');
+    const room = document.querySelector('.side').clientWidth;
+    let size = 60;
+    while (name.offsetWidth > room && size > 48) name.style.fontSize = `${--size}px`;
   }
 
   async function start({ seed, tilt, shotTilt, setup }) {
@@ -45,6 +53,7 @@
     await Promise.all([...document.images].map((img) => img.decode()));
     await zine.ready(['Anton', 'Special Elite', 'Permanent Marker'], () => {
       zine.paper($('sheet'), { seed, sides: { top: 'cut', right: 'cut', bottom: 'torn', left: 'cut' } });
+      fitName();
       zine.paper($('name'), { seed: seed + 1, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
       zine.tape($('tapeA'), { seed: seed + 2 });
       zine.tape($('tapeB'), { seed: seed + 3 });

@@ -5,11 +5,11 @@
 <title>Cover</title>
 <link rel="stylesheet" href="zine.css">
 <style>
-  #page { height: 1000px; }
-  .sheet { position: absolute; left: 56px; top: 56px; width: 1488px; height: 888px; background-color: #fff; }
+  #page { height: 900px; }
+  .sheet { position: absolute; left: 56px; top: 56px; width: 1488px; height: 788px; background-color: #fff; }
   .smudge { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.5), rgba(0,0,0,0)); }
-  .stamp-name { position: absolute; left: 250px; top: 575px; font-family: "Archivo Black", sans-serif; font-size: 100px; line-height: 1; transform: rotate(-2.2deg); }
-  .stamp-role { position: absolute; left: 392px; top: 705px; font-size: 60px; line-height: 1.1; -webkit-text-stroke: 1.4px #000; transform: rotate(1.4deg); }
+  .stamp-name { position: absolute; left: 250px; top: 530px; font-family: "Archivo Black", sans-serif; font-size: 100px; line-height: 1; transform: rotate(-2.2deg); }
+  .stamp-role { position: absolute; left: 392px; top: 652px; font-size: 60px; line-height: 1.1; -webkit-text-stroke: 1.4px #000; transform: rotate(1.4deg); }
   .scribble { position: absolute; overflow: visible; }
 </style>
 </head>
@@ -17,9 +17,9 @@
 <div id="page">
   <div class="base-layer">
     <div class="sheet" id="sheet"></div>
-    <div class="smudge" style="left:40px;top:300px;width:300px;height:420px;opacity:.6"></div>
+    <div class="smudge" style="left:40px;top:260px;width:300px;height:380px;opacity:.6"></div>
 
-    <svg class="scribble" style="left:210px;top:535px" width="1180" height="60" viewBox="0 0 1180 60" fill="none" stroke="#000" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <svg class="scribble" style="left:210px;top:490px" width="1180" height="60" viewBox="0 0 1180 60" fill="none" stroke="#000" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
       <path d="M6 30 C 160 12, 300 46, 470 26 S 800 40, 1000 22 S 1130 34, 1172 18"/>
       <path d="M40 46 C 220 30, 380 54, 560 40 S 900 52, 1110 36" stroke-width="5"/>
     </svg>
@@ -51,7 +51,7 @@
       { text: 'e', font: 'Anton', heightInk: 185, fill: '#fff', color: '#000', rot: 2, dy: 3, gap: 0 },
     ];
 
-    const baseline = 520;
+    const baseline = 478;
     const left = 184;
     const avail = 1225;
     const padX = 12;

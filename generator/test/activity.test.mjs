@@ -4,7 +4,7 @@ import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { shapeCalendar, topLanguages, isCounted, utcDate, shapeActivity, loadActivity, checkActivity, altText, cleanAlt, IGNORED_LANGUAGES } from '../src/activity.mjs';
+import { shapeCalendar, topLanguages, isCounted, utcDate, shapeActivity, loadActivity, checkActivity, altText, cleanAlt, IGNORED_LANGUAGES, OUTRO_ALT } from '../src/activity.mjs';
 
 const here = (relative) => fileURLToPath(new URL(relative, import.meta.url));
 
@@ -164,7 +164,9 @@ test('altText names the page, the total, the languages and the date', () => {
   };
   assert.equal(
     altText(data),
-    'Track 05, Activity. 624 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 9%, Swift 6%. Copied 2026-10-28.',
+    'Track 05, Activity. 624 contributions in the last year. Top languages: TypeScript 44%, Python 23%, Java 18%, JavaScript 9%, Swift 6%. Copied 2026-10-28. '
+      + 'Track 06, Outro: Thanks to Neverland. And to everyone who read this far. See you at the next comeback. '
+      + 'Tracklist: 01 We code Intro, 02 Member Profile, 03 Credits, 04 Title Track, 05 Activity, 06 Outro: Thanks to Neverland. Copyright 2026 Bao Tran.',
   );
 });
 
@@ -195,4 +197,33 @@ test('the page builds elements with textContent and never uses innerHTML', async
 
 test('loadActivity asks for a token when there is no fixture', async () => {
   await assert.rejects(loadActivity({}), /GITHUB_TOKEN/);
+});
+
+test('the outro words in the alt text use only the allowed characters and name every track', () => {
+  assert.match(OUTRO_ALT, /^[A-Za-z0-9 ,.%:+#-]+$/);
+  for (const track of ['We code', 'Member Profile', 'Credits', 'Title Track', 'Activity', 'Outro: Thanks to Neverland']) assert.ok(OUTRO_ALT.includes(track), track);
+});
+
+test('the alt text of the worst case stays within the limit of the daily job', async () => {
+  const longest = { ...goodData(), total: 1234567, languages: Array.from({ length: 5 }, () => ({ name: 'Jupyter Notebook'.padEnd(40, 'x'), percent: 100 })) };
+  assert.ok(altText(longest).length <= 800);
+});
+
+test('the daily job checks the same outro words and the size of the spread', async () => {
+  const workflow = await readFile(here('../../.github/workflows/activity.yml'), 'utf8');
+  const flat = workflow.replace(/"\s*\n\s*r"/g, '');
+  assert.ok(flat.includes(OUTRO_ALT.replace(/\./g, '\\.')), 'the workflow template holds the outro words');
+  assert.ok(workflow.includes('height != 750'), 'the workflow checks the height of the spread');
+});
+
+test('every alt text from the edge-case fixtures matches the form that the daily job expects', async () => {
+  const form = new RegExp(
+    String.raw`^Track 05, Activity\. \d{1,7} contributions? in the last year\. Top languages: [A-Za-z0-9 +#.-]{1,40} \d{1,3}%(, [A-Za-z0-9 +#.-]{1,40} \d{1,3}%){0,4}\. Copied \d{4}-\d{2}-\d{2}\. `
+      + OUTRO_ALT.replace(/[.]/g, String.raw`\.`) + '$',
+  );
+  for (const name of ['activity', 'activity-12345', 'activity-jupyter', 'activity-zero']) {
+    const alt = altText(await loadActivity({ ACTIVITY_FIXTURE: here(`../fixtures/${name}.json`) }));
+    assert.match(alt, form, name);
+    assert.ok(alt.length <= 800, name);
+  }
 });

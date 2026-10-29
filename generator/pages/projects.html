@@ -4,46 +4,55 @@
 <meta charset="utf-8">
 <title>Title Track</title>
 <link rel="stylesheet" href="zine.css">
+<link rel="stylesheet" href="compact.css">
 <style>
-  #page { height: 378px; }
-  #heading { position: absolute; left: 0; top: 0; width: 1600px; height: 378px; }
-  .tape-piece { position: absolute; width: 190px; height: 70px; }
+  #page { height: 175px; }
+  #heading { position: absolute; left: 0; top: 0; width: 1600px; height: 175px; }
+  #slip { position: absolute; left: 30px; top: 106px; padding: 8px 30px 4px 100px; font-size: 40px; line-height: 1.15; white-space: nowrap; transform: rotate(-1.2deg); -webkit-text-stroke: 1px #000; }
+  .tape-piece { position: absolute; width: 130px; height: 52px; }
 </style>
 </head>
 <body>
 <div id="page">
-  <div class="track" id="track">TRACK 04 - Title Track</div>
   <div id="heading"></div>
-  <div class="tape-piece" id="tapeA" style="left:1360px;top:184px;transform:rotate(38deg)"></div>
+  <div class="track" id="track">TRACK 04 - Title Track</div>
+  <div id="slip">Title track: Weekrow</div>
+  <div class="tape-piece" id="tapeA" style="left:-4px;top:122px;transform:rotate(-38deg)"></div>
 </div>
 <script src="parts.js"></script>
 <script>
   zine.ready(['Anton', 'Archivo Black', 'Alfa Slab One', 'Special Elite', 'Rubik Mono One'], () => {
     const $ = (id) => document.getElementById(id);
     zine.track($('track'), { seed: 5 });
+    zine.paper($('slip'), { seed: 481, sides: { top: 'cut', right: 'torn', bottom: 'cut', left: 'torn' } });
     zine.tape($('tapeA'), { seed: 482 });
 
     // Cut-out letters laid out left to right on one baseline, like the cover title. `dy` nudges a tile off the baseline.
     const letters = [
-      { text: 'P', font: 'Alfa Slab One', heightInk: 132, fill: '#fff', color: '#000', rot: -2.5, dy: 0, gap: 14 },
-      { text: 'R', font: 'Anton', heightInk: 144, fill: '#000', color: '#fff', rot: 2, dy: -6, gap: 6 },
-      { text: 'O', font: 'Rubik Mono One', heightInk: 128, fill: '#8f8f8f', color: '#000', rot: -1.5, dy: 8, gap: 10 },
-      { text: 'J', font: 'Archivo Black', heightInk: 140, fill: '#fff', color: '#000', rot: 3, dy: 2, gap: 4 },
-      { text: 'E', font: 'Anton', heightInk: 146, fill: '#fff', color: '#000', rot: -2, dy: -4, gap: 12 },
-      { text: 'C', font: 'Alfa Slab One', heightInk: 130, fill: '#000', color: '#fff', rot: 2.5, dy: 6, gap: 6 },
-      { text: 'T', font: 'Archivo Black', heightInk: 146, fill: '#8f8f8f', color: '#000', rot: -3, dy: -2, gap: 10 },
-      { text: 'S', font: 'Anton', heightInk: 140, fill: '#fff', color: '#000', rot: 1.5, dy: 4, gap: 0 },
+      { text: 'P', font: 'Alfa Slab One', heightInk: 90, fill: '#fff', color: '#000', rot: -2.5, dy: 0, gap: 10 },
+      { text: 'R', font: 'Anton', heightInk: 100, fill: '#000', color: '#fff', rot: 2, dy: -5, gap: 4 },
+      { text: 'O', font: 'Rubik Mono One', heightInk: 88, fill: '#8f8f8f', color: '#000', rot: -1.5, dy: 6, gap: 8 },
+      { text: 'J', font: 'Archivo Black', heightInk: 96, fill: '#fff', color: '#000', rot: 3, dy: 2, gap: 4 },
+      { text: 'E', font: 'Anton', heightInk: 100, fill: '#fff', color: '#000', rot: -2, dy: -3, gap: 10 },
+      { text: 'C', font: 'Alfa Slab One', heightInk: 90, fill: '#000', color: '#fff', rot: 2.5, dy: 5, gap: 4 },
+      { text: 'T', font: 'Archivo Black', heightInk: 100, fill: '#8f8f8f', color: '#000', rot: -3, dy: -2, gap: 8 },
+      { text: 'S', font: 'Anton', heightInk: 94, fill: '#fff', color: '#000', rot: 1.5, dy: 3, gap: 0 },
     ];
-    const baseline = 338;
-    const padX = 26;
-    const padY = 14;
-    let x = 72;
+    const baseline = 131;
+    const padX = 20;
+    const padY = 12;
+    const tiles = [];
+    let x = 0;
     letters.forEach((l, i) => {
       const el = zine.tile($('heading'), { ...l, padX, padY, x, y: 0, seed: 490 + i });
       el.style.top = `${baseline + l.dy - (el.offsetHeight - padY)}px`;
+      tiles.push(el);
       x += el.offsetWidth + l.gap;
     });
-    document.body.dataset.headingEnd = String(Math.round(x));
+    // Right-align the letters with the 28px page margin.
+    const shift = 1600 - 40 - x;
+    tiles.forEach((el) => { el.style.left = `${parseFloat(el.style.left) + shift}px`; });
+    document.body.dataset.headingStart = String(Math.round(shift));
   });
 </script>
 </body>

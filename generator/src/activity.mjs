@@ -1,4 +1,4 @@
-// Builds the activity page: the contribution graph and the top languages of tranbao0.
+// Builds the activity and outro spread: the contribution graph and the top languages of tranbao0 on the left, the outro on the right.
 // Live data comes from the GitHub API (needs GITHUB_TOKEN). ACTIVITY_FIXTURE=<file.json> builds from a saved file instead.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -99,11 +99,17 @@ const ALT_ALLOWED = /[^A-Za-z0-9 ,.%:+#-]/g;
 // Keeps only letters, digits, spaces and the characters , . % : + # -
 export const cleanAlt = (text) => String(text).replace(ALT_ALLOWED, '').replace(/ {2,}/g, ' ').trim();
 
-// Plain alt text with the numbers of the page, for the image in README.md.
+// The words of the outro half of the spread. They never change, so the alt text of the whole image can carry them.
+// Only letters, digits, spaces and the characters , . % : + # - may appear, so the daily job can check the text against a fixed pattern.
+export const OUTRO_ALT = 'Track 06, Outro: Thanks to Neverland. And to everyone who read this far. See you at the next comeback. '
+  + 'Tracklist: 01 We code Intro, 02 Member Profile, 03 Credits, 04 Title Track, 05 Activity, 06 Outro: Thanks to Neverland. '
+  + 'Copyright 2026 Bao Tran.';
+
+// Plain alt text for the activity and outro spread in README.md: the live numbers first, then the outro words.
 export function altText(data) {
   const noun = data.total === 1 ? 'contribution' : 'contributions';
   const languages = data.languages.map((l) => `${cleanAlt(l.name)} ${l.percent}%`).join(', ');
-  return cleanAlt(`Track 05, Activity. ${data.total} ${noun} in the last year. Top languages: ${languages}. Copied ${data.copyDate}.`);
+  return cleanAlt(`Track 05, Activity. ${data.total} ${noun} in the last year. Top languages: ${languages}. Copied ${data.copyDate}. ${OUTRO_ALT}`);
 }
 
 async function api(url, token, init = {}) {

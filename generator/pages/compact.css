@@ -1,0 +1,2 @@
+/* Compact pages: the track label is smaller and sits closer to the corner. Text never goes below 40px. */
+.track { left: 28px; top: 20px; height: 72px; padding: 0 32px; font-size: 40px; -webkit-text-stroke: 1px #000; }

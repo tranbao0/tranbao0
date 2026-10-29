@@ -105,7 +105,7 @@ jobs:
                       if kind != b"IHDR" or length != 13:
                           return "the first chunk is not IHDR"
                       width, height, _, color_type = struct.unpack(">IIBB", body[:10])
-                      if width != 1600 or not 800 <= height <= 2000 or color_type != 3:
+                      if width != 1600 or height != 750 or color_type != 3:
                           return "unexpected size or color type"
                       first = False
                   pos += 12 + length
@@ -121,12 +121,17 @@ jobs:
 
           alt = (artifact / "activity-alt.txt").read_text(encoding="utf-8").strip()
           language = r"[A-Za-z0-9 +#.-]{1,40} \d{1,3}%"
+          outro = (
+              r"Track 06, Outro: Thanks to Neverland\. And to everyone who read this far\. See you at the next comeback\. "
+              r"Tracklist: 01 We code Intro, 02 Member Profile, 03 Credits, 04 Title Track, 05 Activity, 06 Outro: Thanks to Neverland\. "
+              r"Copyright 2026 Bao Tran\."
+          )
           template = (
               r"Track 05, Activity\. \d{1,7} contributions? in the last year\. "
               r"Top languages: " + language + r"(, " + language + r"){0,4}\. "
-              r"Copied \d{4}-\d{2}-\d{2}\."
+              r"Copied \d{4}-\d{2}-\d{2}\. " + outro
           )
-          if len(alt) > 500 or not re.fullmatch(template, alt):
+          if len(alt) > 800 or not re.fullmatch(template, alt):
               sys.exit("The alt text does not match the expected form")
 
           readme = Path("README.md")
