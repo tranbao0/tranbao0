@@ -18,16 +18,15 @@ const HOP = 70; // px a hopping letter rises
 
 // Entrance: for each step, which letters show and how much of the way to the final place they have
 // travelled (0 = piled at the middle of the word, 1 = in place). Letter numbers count from the left.
-// The last bunched step also nudges single letters sideways so that none hides behind a neighbour.
+// The cluster and the last bunched step also nudge single letters sideways (px, by letter number) so that none hides behind a neighbour.
 const entranceSteps = (count) => {
   const middle = Math.floor(count / 2) + 1;
   return [
     { shown: [middle], travelled: 0.12 },
-    { shown: [0, 1, middle], travelled: 0.29 },
-    { shown: Array.from({ length: count }, (_, i) => i), travelled: 0.67, nudge: true },
+    { shown: [0, 1, middle], travelled: 0.29, nudge: [-110] },
+    { shown: Array.from({ length: count }, (_, i) => i), travelled: 0.67, nudge: [-20, -20, -25, -35, 40, 40] },
   ];
 };
-const nudges = [-20, -20, -25, -35, 40, 40]; // px, by letter number
 
 const pct = (v) => `${+(v * 100).toFixed(4)}%`;
 const sec = (v) => `${+v.toFixed(4)}s`;
@@ -49,7 +48,7 @@ function motionCss(letters) {
     // Keyframe 0 is the bare paper; each entrance step starts after the lead and lasts one STEP.
     const frames = [`0% { opacity: 0; transform: translate(0, 0); }`];
     entrance.forEach((s, k) => {
-      const dx = (middle - centre) * (1 - s.travelled) + (s.nudge ? nudges[i] ?? 0 : 0);
+      const dx = (middle - centre) * (1 - s.travelled) + (s.nudge?.[i] ?? 0);
       frames.push(`${pct((LEAD + k * STEP) / total)} { opacity: ${s.shown.includes(i) ? 1 : 0}; transform: translate(${dx.toFixed(1)}px, 0); }`);
     });
     frames.push(`100% { opacity: 1; transform: translate(0, 0); }`);

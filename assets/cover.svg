@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="We code - Bao Tran, Software Engineering at SJSU, on a burnt photocopied sheet">
 <style>
-  @keyframes enter-0 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 0; transform: translate(413.6px, 0); } 74.359% { opacity: 1; transform: translate(333.7px, 0); } 87.1795% { opacity: 1; transform: translate(135.1px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
+  @keyframes enter-0 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 0; transform: translate(413.6px, 0); } 74.359% { opacity: 1; transform: translate(223.7px, 0); } 87.1795% { opacity: 1; transform: translate(135.1px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
   #l0 { animation: enter-0 0.65s step-end forwards; }
   @keyframes flip-0 { 0% { opacity: 1; } 2.381% { opacity: 0; } 100% { opacity: 0; } }
   #l0 .twin { opacity: 0; animation: flip-0 3.5s step-end 0.9833s infinite; }
