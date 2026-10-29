@@ -1,33 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="We code - Bao Tran, Software Engineering at SJSU, on a burnt photocopied sheet">
 <style>
-  @keyframes enter-0 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 0; transform: translate(413.6px, 0); } 74.359% { opacity: 1; transform: translate(223.7px, 0); } 87.1795% { opacity: 1; transform: translate(135.1px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
-  #l0 { animation: enter-0 0.65s step-end forwards; }
-  @keyframes flip-0 { 0% { opacity: 1; } 2.381% { opacity: 0; } 100% { opacity: 0; } }
-  #l0 .twin { opacity: 0; animation: flip-0 3.5s step-end 0.9833s infinite; }
-  @keyframes enter-1 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 0; transform: translate(209.4px, 0); } 74.359% { opacity: 1; transform: translate(169.0px, 0); } 87.1795% { opacity: 1; transform: translate(58.5px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
-  #l1 { animation: enter-1 0.65s step-end forwards; }
-  @keyframes flip-1 { 0% { opacity: 0; } 2.381% { opacity: 1; } 4.7619% { opacity: 0; } 100% { opacity: 0; } }
-  #l1 .twin { opacity: 0; animation: flip-1 3.5s step-end 0.9833s infinite; }
-  @keyframes enter-2 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 0; transform: translate(-9.7px, 0); } 74.359% { opacity: 0; transform: translate(-7.8px, 0); } 87.1795% { opacity: 1; transform: translate(-28.6px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
-  #l2 { animation: enter-2 0.65s step-end forwards; }
-  @keyframes flip-2 { 0% { opacity: 0; } 4.7619% { opacity: 1; } 7.1429% { opacity: 0; } 100% { opacity: 0; } }
-  #l2 .twin { opacity: 0; animation: flip-2 3.5s step-end 0.9833s infinite; }
-  @keyframes hop-2 { 0% { transform: translateY(-70px); } 100% { transform: translateY(0); } }
-  #l2 .hop { animation: hop-2 0.0833s step-end 1.0667s; }
-  @keyframes enter-3 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 0; transform: translate(-143.4px, 0); } 74.359% { opacity: 0; transform: translate(-115.7px, 0); } 87.1795% { opacity: 1; transform: translate(-88.8px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
-  #l3 { animation: enter-3 0.65s step-end forwards; }
-  @keyframes flip-3 { 0% { opacity: 0; } 7.1429% { opacity: 1; } 9.5238% { opacity: 0; } 100% { opacity: 0; } }
-  #l3 .twin { opacity: 0; animation: flip-3 3.5s step-end 0.9833s infinite; }
-  @keyframes enter-4 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 1; transform: translate(-315.9px, 0); } 74.359% { opacity: 1; transform: translate(-254.9px, 0); } 87.1795% { opacity: 1; transform: translate(-78.5px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
-  #l4 { animation: enter-4 0.65s step-end forwards; }
-  @keyframes flip-4 { 0% { opacity: 0; } 9.5238% { opacity: 1; } 11.9048% { opacity: 0; } 100% { opacity: 0; } }
-  #l4 .twin { opacity: 0; animation: flip-4 3.5s step-end 0.9833s infinite; }
-  @keyframes hop-4 { 0% { transform: translateY(-70px); } 100% { transform: translateY(0); } }
-  #l4 .hop { animation: hop-4 0.0833s step-end 1.15s; }
-  @keyframes enter-5 { 0% { opacity: 0; transform: translate(0, 0); } 61.5385% { opacity: 0; transform: translate(-486.6px, 0); } 74.359% { opacity: 0; transform: translate(-392.6px, 0); } 87.1795% { opacity: 1; transform: translate(-142.5px, 0); } 100% { opacity: 1; transform: translate(0, 0); } }
-  #l5 { animation: enter-5 0.65s step-end forwards; }
-  @keyframes flip-5 { 0% { opacity: 0; } 11.9048% { opacity: 1; } 14.2857% { opacity: 0; } 100% { opacity: 0; } }
-  #l5 .twin { opacity: 0; animation: flip-5 3.5s step-end 0.9833s infinite; }
+  @keyframes enter-0 { 0% { opacity: 0; transform: translate(0, 0); } 4.7151% { opacity: 0; transform: translate(413.6px, 0); } 6.1886% { opacity: 1; transform: translate(223.7px, 0); } 7.6621% { opacity: 1; transform: translate(135.1px, 0); } 9.1356% { opacity: 1; transform: translate(0, 0); } 95.5796% { opacity: 1; transform: translate(135.1px, 0); } 97.053% { opacity: 1; transform: translate(223.7px, 0); } 98.5265% { opacity: 0; transform: translate(413.6px, 0); } 100% { opacity: 0; transform: translate(0, 0); } }
+  #l0 { animation: enter-0 8.483333s step-end infinite; }
+  @keyframes flip-0 { 0% { opacity: 0; } 13.0648% { opacity: 1; } 14.0472% { opacity: 0; } 54.3222% { opacity: 1; } 55.3045% { opacity: 0; } 100% { opacity: 0; } }
+  #l0 .twin { opacity: 0; animation: flip-0 8.483333s step-end infinite; }
+  @keyframes enter-1 { 0% { opacity: 0; transform: translate(0, 0); } 4.7151% { opacity: 0; transform: translate(209.4px, 0); } 6.1886% { opacity: 1; transform: translate(169.0px, 0); } 7.6621% { opacity: 1; transform: translate(58.5px, 0); } 9.1356% { opacity: 1; transform: translate(0, 0); } 95.5796% { opacity: 1; transform: translate(58.5px, 0); } 97.053% { opacity: 1; transform: translate(169.0px, 0); } 98.5265% { opacity: 0; transform: translate(209.4px, 0); } 100% { opacity: 0; transform: translate(0, 0); } }
+  #l1 { animation: enter-1 8.483333s step-end infinite; }
+  @keyframes flip-1 { 0% { opacity: 0; } 14.0472% { opacity: 1; } 15.0295% { opacity: 0; } 55.3045% { opacity: 1; } 56.2868% { opacity: 0; } 100% { opacity: 0; } }
+  #l1 .twin { opacity: 0; animation: flip-1 8.483333s step-end infinite; }
+  @keyframes hop-1 { 0% { transform: translateY(0); } 13.0648% { transform: translateY(-70px); } 14.0472% { transform: translateY(0); } 54.3222% { transform: translateY(-70px); } 55.3045% { transform: translateY(0); } 100% { transform: translateY(0); } }
+  #l1 .hop { animation: hop-1 8.483333s step-end infinite; }
+  @keyframes enter-2 { 0% { opacity: 0; transform: translate(0, 0); } 4.7151% { opacity: 0; transform: translate(-9.7px, 0); } 6.1886% { opacity: 0; transform: translate(-7.8px, 0); } 7.6621% { opacity: 1; transform: translate(-28.6px, 0); } 9.1356% { opacity: 1; transform: translate(0, 0); } 95.5796% { opacity: 1; transform: translate(-28.6px, 0); } 97.053% { opacity: 0; transform: translate(-7.8px, 0); } 98.5265% { opacity: 0; transform: translate(-9.7px, 0); } 100% { opacity: 0; transform: translate(0, 0); } }
+  #l2 { animation: enter-2 8.483333s step-end infinite; }
+  @keyframes flip-2 { 0% { opacity: 0; } 15.0295% { opacity: 1; } 16.0118% { opacity: 0; } 56.2868% { opacity: 1; } 57.2692% { opacity: 0; } 100% { opacity: 0; } }
+  #l2 .twin { opacity: 0; animation: flip-2 8.483333s step-end infinite; }
+  @keyframes hop-2 { 0% { transform: translateY(0); } 14.0472% { transform: translateY(-70px); } 15.0295% { transform: translateY(0); } 55.3045% { transform: translateY(-70px); } 56.2868% { transform: translateY(0); } 100% { transform: translateY(0); } }
+  #l2 .hop { animation: hop-2 8.483333s step-end infinite; }
+  @keyframes enter-3 { 0% { opacity: 0; transform: translate(0, 0); } 4.7151% { opacity: 0; transform: translate(-143.4px, 0); } 6.1886% { opacity: 0; transform: translate(-115.7px, 0); } 7.6621% { opacity: 1; transform: translate(-88.8px, 0); } 9.1356% { opacity: 1; transform: translate(0, 0); } 95.5796% { opacity: 1; transform: translate(-88.8px, 0); } 97.053% { opacity: 0; transform: translate(-115.7px, 0); } 98.5265% { opacity: 0; transform: translate(-143.4px, 0); } 100% { opacity: 0; transform: translate(0, 0); } }
+  #l3 { animation: enter-3 8.483333s step-end infinite; }
+  @keyframes flip-3 { 0% { opacity: 0; } 16.0118% { opacity: 1; } 16.9941% { opacity: 0; } 57.2692% { opacity: 1; } 58.2515% { opacity: 0; } 100% { opacity: 0; } }
+  #l3 .twin { opacity: 0; animation: flip-3 8.483333s step-end infinite; }
+  @keyframes hop-3 { 0% { transform: translateY(0); } 15.0295% { transform: translateY(-70px); } 16.0118% { transform: translateY(0); } 56.2868% { transform: translateY(-70px); } 57.2692% { transform: translateY(0); } 100% { transform: translateY(0); } }
+  #l3 .hop { animation: hop-3 8.483333s step-end infinite; }
+  @keyframes enter-4 { 0% { opacity: 0; transform: translate(0, 0); } 4.7151% { opacity: 1; transform: translate(-315.9px, 0); } 6.1886% { opacity: 1; transform: translate(-254.9px, 0); } 7.6621% { opacity: 1; transform: translate(-78.5px, 0); } 9.1356% { opacity: 1; transform: translate(0, 0); } 95.5796% { opacity: 1; transform: translate(-78.5px, 0); } 97.053% { opacity: 1; transform: translate(-254.9px, 0); } 98.5265% { opacity: 1; transform: translate(-315.9px, 0); } 100% { opacity: 0; transform: translate(0, 0); } }
+  #l4 { animation: enter-4 8.483333s step-end infinite; }
+  @keyframes flip-4 { 0% { opacity: 0; } 16.9941% { opacity: 1; } 17.9764% { opacity: 0; } 58.2515% { opacity: 1; } 59.2338% { opacity: 0; } 100% { opacity: 0; } }
+  #l4 .twin { opacity: 0; animation: flip-4 8.483333s step-end infinite; }
+  @keyframes hop-4 { 0% { transform: translateY(0); } 16.0118% { transform: translateY(-70px); } 16.9941% { transform: translateY(0); } 57.2692% { transform: translateY(-70px); } 58.2515% { transform: translateY(0); } 100% { transform: translateY(0); } }
+  #l4 .hop { animation: hop-4 8.483333s step-end infinite; }
+  @keyframes enter-5 { 0% { opacity: 0; transform: translate(0, 0); } 4.7151% { opacity: 0; transform: translate(-486.6px, 0); } 6.1886% { opacity: 0; transform: translate(-392.6px, 0); } 7.6621% { opacity: 1; transform: translate(-142.5px, 0); } 9.1356% { opacity: 1; transform: translate(0, 0); } 95.5796% { opacity: 1; transform: translate(-142.5px, 0); } 97.053% { opacity: 0; transform: translate(-392.6px, 0); } 98.5265% { opacity: 0; transform: translate(-486.6px, 0); } 100% { opacity: 0; transform: translate(0, 0); } }
+  #l5 { animation: enter-5 8.483333s step-end infinite; }
+  @keyframes flip-5 { 0% { opacity: 0; } 17.9764% { opacity: 1; } 18.9587% { opacity: 0; } 59.2338% { opacity: 1; } 60.2161% { opacity: 0; } 100% { opacity: 0; } }
+  #l5 .twin { opacity: 0; animation: flip-5 8.483333s step-end infinite; }
+  @keyframes hop-5 { 0% { transform: translateY(0); } 16.9941% { transform: translateY(-70px); } 17.9764% { transform: translateY(0); } 58.2515% { transform: translateY(-70px); } 59.2338% { transform: translateY(0); } 100% { transform: translateY(0); } }
+  #l5 .hop { animation: hop-5 8.483333s step-end infinite; }
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; }
   }
