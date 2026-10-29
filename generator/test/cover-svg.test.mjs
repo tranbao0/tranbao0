@@ -101,3 +101,14 @@ test('the first fan step shows only the letter right of the middle, and the last
   assert.deepEqual([0, 1, 2, 3, 4, 5].map((i) => step(i, 1)), ['0', '0', '0', '0', '1', '0']);
   for (let i = 0; i < 6; i++) assert.equal(step(i, 3), '1');
 });
+
+test('the build stops when a hopping letter would reach the header', async () => {
+  const { assertHopsClearOf, HOP } = await import('../src/cover-svg.mjs');
+  const header = { x: 60, y: 30, w: 820, h: 70 };
+  const clear = [{ x: 200, y: 400, width: 100 }, { x: 320, y: 100 + HOP + 10, width: 100 }, { x: 1000, y: 120, width: 300 }];
+  assert.doesNotThrow(() => assertHopsClearOf(header, clear));
+  const blocked = [{ x: 200, y: 400, width: 100 }, { x: 320, y: 100 + HOP - 10, width: 100 }];
+  assert.throws(() => assertHopsClearOf(header, blocked), /letter 1 hops into the header/);
+  // The first letter never hops, so it may sit close under the header.
+  assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 200, y: 110, width: 100 }]));
+});

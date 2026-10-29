@@ -135,6 +135,16 @@ function motionCss(letters) {
   return css + REDUCED_MOTION_CSS;
 }
 
+// Throws when a hopping letter, at the top of its hop, would touch the header box. Every letter but the first hops.
+export function assertHopsClearOf(header, letters, margin = 4) {
+  letters.forEach((l, i) => {
+    if (i === 0) return;
+    const top = l.y - HOP;
+    const apart = l.x >= header.x + header.w + margin || l.x + l.width <= header.x - margin || top >= header.y + header.h + margin;
+    if (!apart) throw new Error(`cover letter ${i} hops into the header: its top reaches y ${top}, the header ends at y ${Math.ceil(header.y + header.h)}`);
+  });
+}
+
 // `letters` lists the title tiles from left to right, each { normal, inverted, x, y, width, height }.
 // The two PNGs of a tile have the same size and place, so a flip never shifts the letter.
 export function coverSvg({ base, letters, width, height, label }) {
