@@ -11,8 +11,8 @@ export const assetsDir = path.resolve(root, '..', 'assets');
 
 // Renders a page layer and runs it through the photocopy filter. Returns a palette PNG buffer.
 async function copyLayer(renderer, file, { layer, transparent, seed, width, data }) {
-  const png = await renderer.render(path.join(pagesDir, file), { layer, transparent, width, data });
-  const copy = photocopy(await decodeRgba(png), { seed });
+  const { png, zones } = await renderer.render(path.join(pagesDir, file), { layer, transparent, width, data });
+  const copy = photocopy(await decodeRgba(png), { seed, zones });
   return encodePalettePng(copy);
 }
 
