@@ -111,8 +111,9 @@
     tape(el, { seed, fill: 'rgba(222,222,222,0.84)' });
   }
 
-  // Ink that wears off in small patches and scratches, used as a CSS mask.
-  function wear(el, { seed = 1, patches = 70, scratches = 8, size = 5 } = {}) {
+  // Ink that wears off in small patches and scratches, used as a CSS mask. Patches stay out of the `keepOut` boxes
+  // ({ x, y, w, h } in the element's own pixels), so worn ink can leave the lettering of a stamp whole.
+  function wear(el, { seed = 1, patches = 70, scratches = 8, size = 5, keepOut = [] } = {}) {
     const rand = rng(seed);
     const w = el.offsetWidth;
     const h = el.offsetHeight;
@@ -127,6 +128,8 @@
       const x = rand() * w;
       const y = rand() * h;
       const r = 1 + Math.pow(rand(), 2) * size * 2;
+      const reach = r * 1.45;
+      if (keepOut.some((k) => x > k.x - reach && x < k.x + k.w + reach && y > k.y - reach && y < k.y + k.h + reach)) continue;
       ctx.beginPath();
       for (let k = 0; k < 7; k++) {
         const a = (k / 7) * Math.PI * 2;

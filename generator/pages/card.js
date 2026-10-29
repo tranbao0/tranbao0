@@ -47,7 +47,9 @@
     el.style.cssText = `right:${right}px;bottom:${bottom}px;transform:rotate(${rot}deg)`;
     el.innerHTML = '<span>MADE WITH</span><b>SPITE</b>';
     $('sheet').appendChild(el);
-    zine.wear(el, { seed, patches: 40, scratches: 0, size: 2.5 });
+    // The worn ink stays on the rule and the empty paper; the letters stay whole.
+    const keepOut = [...el.children].map((c) => ({ x: c.offsetLeft + el.clientLeft, y: c.offsetTop + el.clientTop, w: c.offsetWidth, h: c.offsetHeight }));
+    zine.wear(el, { seed, patches: 40, scratches: 0, size: 2.5, keepOut });
   }
 
   // Shrinks the name until it fits the text column, so a long project name never spills out.
