@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Cover</title>
-<link rel="stylesheet" href="zine.css">
+<link rel="stylesheet" href="../node_modules/@tranbao0/printshop/packs/zine/zine.css">
 <style>
   #page { height: 900px; }
   .sheet { position: absolute; left: 56px; top: 56px; width: 1488px; height: 788px; background-color: #fff; }
@@ -32,7 +32,7 @@
 
   <div class="title-layer" id="title"></div>
 </div>
-<script src="parts.js"></script>
+<script src="../node_modules/@tranbao0/printshop/packs/zine/parts.js"></script>
 <script>
   zine.ready(['Anton', 'Archivo Black', 'Alfa Slab One', 'Special Elite', 'Permanent Marker', 'Rubik Mono One'], () => {
     zine.burn(document.getElementById('sheet'), { seed: 135, depth: 150, singe: 50, reach: 92 });
