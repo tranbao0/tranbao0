@@ -161,5 +161,6 @@ jobs:
           fi
           git commit -m "Update activity page"
           git fetch origin main
-          git rebase FETCH_HEAD
+          git merge-base --is-ancestor "$GITHUB_SHA" FETCH_HEAD || { echo "main no longer contains $GITHUB_SHA"; exit 1; }
+          git rebase --onto FETCH_HEAD HEAD~1
           git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
