@@ -11,14 +11,12 @@ const tag = (name, seed) => (r) => buildStatic(r, { file: `tag-${name}.html`, ou
 
 const jobs = {
   cover: (r) => buildCover(r),
-  profile: (r) => buildStatic(r, { file: 'profile.html', out: 'member-profile.png', seed: 202 }),
-  credits: (r) => buildStatic(r, { file: 'credits.html', out: 'credits.png', seed: 303 }),
+  'profile-credits': (r) => buildStatic(r, { file: 'profile-credits.html', out: 'profile-credits.png', seed: 202 }),
   projects: (r) => buildStatic(r, { file: 'projects.html', out: 'projects.png', seed: 404 }),
   'card-weekrow': card('weekrow', 411),
   'card-songranking': card('songranking', 412),
   'card-fitttt': card('fitttt', 413),
   'card-beautiful-nail': card('beautiful-nail', 414),
-  outro: (r) => buildStatic(r, { file: 'outro.html', out: 'outro.png', seed: 606 }),
   'tag-fan-letter': tag('fan-letter', 611),
   'tag-kofi': tag('kofi', 612),
   activity: (r) => buildActivity(r),

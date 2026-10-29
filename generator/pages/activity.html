@@ -2,58 +2,88 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Activity</title>
+<title>Activity and Outro</title>
 <link rel="stylesheet" href="zine.css">
+<link rel="stylesheet" href="compact.css">
 <style>
-  #page { padding: 150px 0 40px; }
-  #sheet { position: relative; margin: 0 56px; padding: 40px 48px 54px; transform: rotate(-0.6deg); }
+  body { font-size: 40px; line-height: 1.15; }
+  #page { height: 750px; }
 
-  #top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  #head { position: relative; width: fit-content; height: 124px; margin: 0 0 6px -22px; padding: 0 40px; display: flex; align-items: center;
-          font-family: "Anton", sans-serif; font-size: 98px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(0.5deg); white-space: nowrap; }
-  #top .line { font-size: 64px; line-height: 1; margin-left: 4px; transform: rotate(-0.6deg); }
-  #copy { position: relative; padding: 12px 22px 6px; text-align: center; font-family: "Rubik Mono One", sans-serif; font-size: 56px; line-height: 1.2;
-          transform: rotate(3deg); margin: 0 6px 0 0; }
-  #copy small { display: block; font-size: 56px; }
+  /* Left half: Track 05, Activity (live data). */
+  #sheet { position: absolute; left: 24px; top: 62px; width: 850px; height: 676px; padding: 36px 26px 0; transform: rotate(-0.5deg); }
+  #top { display: flex; align-items: flex-start; justify-content: space-between; height: 128px; }
+  #head { position: relative; width: fit-content; height: 78px; margin: 0 0 4px -20px; padding: 0 30px; display: flex; align-items: center;
+          font-family: "Anton", sans-serif; font-size: 60px; line-height: 1; color: #fff; letter-spacing: 2px; transform: rotate(0.5deg); white-space: nowrap; }
+  #top .line { font-size: 40px; line-height: 1.1; margin-left: 2px; transform: rotate(-0.6deg); -webkit-text-stroke: 1px #000; }
+  #copy { position: relative; padding: 8px 18px 4px; text-align: center; font-family: "Archivo Black", sans-serif; font-size: 40px; line-height: 1.2; letter-spacing: 1px;
+          transform: rotate(3deg); margin: 4px 4px 0 0; white-space: nowrap; }
+  #copy small { display: block; font-size: 40px; }
 
-  #graph { position: relative; }
+  #graph { position: relative; margin-top: 6px; }
   #graph svg { display: block; overflow: visible; }
-  .month { position: absolute; top: 0; font-family: "Anton", sans-serif; font-size: 56px; line-height: 1; }
-  #legend { display: flex; align-items: center; justify-content: flex-end; gap: 18px; margin: 0 4px 6px 0; font-size: 60px; line-height: 1.1; transform: rotate(-0.4deg); }
+  .month { position: absolute; top: 0; font-family: "Anton", sans-serif; font-size: 40px; line-height: 1; white-space: nowrap; }
+  #legend { display: flex; align-items: center; justify-content: flex-end; gap: 10px; height: 42px; margin: 0 4px 0 0; font-size: 40px; line-height: 1; transform: rotate(-0.4deg); }
   #legend svg { overflow: visible; }
 
-  #mid { margin-bottom: 10px; }
-  #langhead { position: relative; width: fit-content; height: 112px; margin-left: -22px; padding: 0 46px; display: flex; align-items: center;
-              font-family: "Anton", sans-serif; font-size: 88px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(-0.8deg); }
-  .lang { display: flex; align-items: center; height: 72px; margin-bottom: 4px; }
-  .lang .name { flex: none; width: var(--name-width, 380px); font-size: var(--name-size, 62px); white-space: nowrap; line-height: 1; padding-left: 8px; }
-  .lang .room { position: relative; flex: 1; height: 72px; }
-  .lang .bar { position: absolute; left: 0; top: 2px; height: 68px; }
-  .lang .pct { position: absolute; top: 4px; font-family: "Permanent Marker", cursive; font-size: 68px; line-height: 1; white-space: nowrap; }
+  #langhead { position: relative; width: fit-content; height: 58px; margin: 6px 0 2px -20px; padding: 0 30px; display: flex; align-items: center;
+              font-family: "Anton", sans-serif; font-size: 44px; line-height: 1; color: #fff; letter-spacing: 3px; transform: rotate(-0.8deg); }
+  .lang { display: flex; align-items: center; height: 44px; margin-bottom: 1px; }
+  .lang .name { flex: none; width: var(--name-width, 250px); white-space: nowrap; line-height: 1; padding-left: 4px; }
+  .lang .room { position: relative; flex: 1; height: 44px; }
+  .lang .bar { position: absolute; left: 0; top: 4px; height: 36px; }
+  .lang .pct { position: absolute; top: 3px; font-family: "Permanent Marker", cursive; font-size: 42px; line-height: 1; white-space: nowrap; }
 
-  .tape-piece { position: absolute; width: 250px; height: 84px; }
+  /* Right half: Track 06, Outro. Pieces of paper and white type on black. */
+  #outro { position: absolute; left: 892px; top: 0; width: 684px; height: 750px; }
+  #track6 { position: absolute; left: 4px; top: 20px; }
+  #big { position: absolute; left: 6px; top: 100px; font-family: "Anton", sans-serif; font-size: 72px; line-height: 1; color: #fff; text-transform: uppercase; letter-spacing: 3px; white-space: nowrap; transform: rotate(-1deg); transform-origin: 0 50%; }
+  #note { position: absolute; left: 14px; top: 194px; width: 650px; padding: 18px 24px 14px; font-size: 40px; line-height: 1.17; -webkit-text-stroke: 1px #000; transform: rotate(0.8deg); }
+  #list { position: absolute; left: 0; top: 400px; width: 684px; padding: 14px 24px 22px; transform: rotate(-0.8deg); }
+  #list h2 { font-family: "Anton", sans-serif; font-weight: 400; font-size: 44px; letter-spacing: 4px; line-height: 1; margin-bottom: 2px; }
+  .row { display: flex; align-items: baseline; gap: 14px; height: 44px; padding-top: 2px; border-bottom: 3px dashed #444; line-height: 1.1; white-space: nowrap; }
+  .row:last-child { border-bottom: 0; }
+  .row b { font-family: "Archivo Black", sans-serif; font-weight: 400; font-size: 40px; width: 54px; flex: none; }
+  #bar { position: absolute; left: 436px; top: 418px; width: 206px; height: 104px; padding: 10px 14px; border: 5px solid #000; background: #fff; transform: rotate(2deg); }
+  #bar .bars { display: flex; align-items: stretch; justify-content: space-between; height: 100%; }
+  #bar .bars i { display: block; background: #000; }
+  #copyright { position: absolute; left: 430px; top: 548px; font-family: "Archivo Black", sans-serif; font-size: 40px; line-height: 1.12; text-align: center; color: #fff; padding: 10px 20px 6px; border: 7px solid #fff; border-radius: 8px; transform: rotate(-4deg); white-space: nowrap; background: #000; }
+
+  .tape-piece { position: absolute; width: 190px; height: 64px; }
 </style>
 </head>
 <body>
 <div id="page">
-  <div class="track" id="track">TRACK 05 - Activity</div>
-
   <div id="sheet">
     <div id="top">
       <div><div id="head"></div><div class="line">in the last year</div></div>
       <div id="copy" class="stamp double"></div>
     </div>
-
     <div id="graph"></div>
-
     <div id="legend"></div>
-
-    <div id="mid"><div id="langhead">TOP LANGUAGES</div></div>
+    <div id="langhead">TOP LANGUAGES</div>
     <div id="langs"></div>
   </div>
+  <div class="track" id="track">TRACK 05 - Activity</div>
 
-  <div class="tape-piece" id="tapeA" style="left:1330px;top:84px;transform:rotate(38deg)"></div>
-  <div class="tape-piece" id="tapeB" style="left:-60px;top:1100px;transform:rotate(36deg)"></div>
+  <div id="outro">
+    <div class="track" id="track6">TRACK 06 - Outro</div>
+    <div id="big">Thanks to Neverland</div>
+    <div id="note">and to everyone who read this far. See you at the next comeback.</div>
+    <div id="list">
+      <h2>TRACKLIST</h2>
+      <div class="row"><b>01</b><span>We code (Intro)</span></div>
+      <div class="row"><b>02</b><span>Member Profile</span></div>
+      <div class="row"><b>03</b><span>Credits</span></div>
+      <div class="row"><b>04</b><span>Title Track</span></div>
+      <div class="row"><b>05</b><span>Activity</span></div>
+      <div class="row"><b>06</b><span>Outro: Thanks to Neverland</span></div>
+    </div>
+    <div id="bar"><div class="bars" id="bars"></div></div>
+    <div id="copyright">&copy; 2026<br>Bao Tran</div>
+  </div>
+
+  <div class="tape-piece" id="tapeA" style="left:690px;top:20px;transform:rotate(34deg)"></div>
+  <div class="tape-piece" id="tapeB" style="left:660px;top:690px;transform:rotate(-34deg)"></div>
 </div>
 <script src="parts.js"></script>
 <script>
@@ -77,34 +107,35 @@
     return svgEl('polygon', { points: points.join(' '), fill: '#000' });
   }
 
-  // Blot diameters for the five GitHub levels: NONE to FOURTH_QUARTILE.
-  const SIZES = [5, 13, 18, 22, 26];
+  // Blot diameters for the five GitHub levels: NONE to FOURTH_QUARTILE. The graph pitch is about 15px.
+  const SIZES = [4, 8, 10, 12, 13];
   // The legend shows the lightest level larger, so its first dot stays visible on a phone.
-  const LEGEND_SIZES = [11, 14, 18, 22, 26];
+  const LEGEND_SIZES = [9, 10, 12, 14, 16];
 
   function drawGraph(host, data, width) {
     const cols = data.weeks.length;
     const pitchX = Math.floor(width / cols);
-    const pitchY = 30;
-    const top = 64;
+    const pitchY = 15;
+    const top = 44;
     const rand = zine.rng(77);
     const svg = svgEl('svg', { width, height: top + 7 * pitchY });
     data.weeks.forEach((week, col) => {
       for (const day of week) {
-        const cx = col * pitchX + pitchX / 2 + (rand() - 0.5) * 2;
-        const cy = top + day.weekday * pitchY + pitchY / 2 + (rand() - 0.5) * 2;
+        const cx = col * pitchX + pitchX / 2 + (rand() - 0.5) * 1.2;
+        const cy = top + day.weekday * pitchY + pitchY / 2 + (rand() - 0.5) * 1.2;
         svg.appendChild(blot(rand, cx, cy, SIZES[day.level]));
       }
     });
     host.style.height = `${top + 7 * pitchY}px`;
     host.appendChild(svg);
-    for (const m of data.months) {
+    // Every second month gets its name, so the names never touch.
+    data.months.filter((m, i) => i % 2 === 0).forEach((m) => {
       const el = document.createElement('div');
       el.className = 'month';
       el.textContent = m.label;
       el.style.left = `${m.col * pitchX}px`;
       host.appendChild(el);
-    }
+    });
   }
 
   function drawLegend(host) {
@@ -112,8 +143,8 @@
     const word = (text) => Object.assign(document.createElement('span'), { textContent: text });
     host.appendChild(word('less'));
     for (const size of LEGEND_SIZES) {
-      const svg = svgEl('svg', { width: 30, height: 30 });
-      svg.appendChild(blot(rand, 15, 15, size));
+      const svg = svgEl('svg', { width: 22, height: 22 });
+      svg.appendChild(blot(rand, 11, 11, size));
       host.appendChild(svg);
     }
     host.appendChild(word('more'));
@@ -124,7 +155,7 @@
     const rows = languages.map((lang, i) => {
       const row = document.createElement('div');
       row.className = 'lang';
-      row.style.transform = `rotate(${[-0.5, 0.4, -0.3, 0.6, -0.4][i % 5]}deg)`;
+      row.style.transform = `rotate(${[-0.4, 0.3, -0.25, 0.45, -0.3][i % 5]}deg)`;
       const name = Object.assign(document.createElement('div'), { className: 'name', textContent: lang.name });
       const room = document.createElement('div');
       room.className = 'room';
@@ -136,20 +167,16 @@
       host.appendChild(row);
       return { lang, name, bar, pct };
     });
-    // The label column fits the longest name, and the type shrinks a little if a name is very long.
-    let size = 62;
-    const widest = () => Math.max(...rows.map((r) => r.name.scrollWidth));
-    host.style.setProperty('--name-size', `${size}px`);
+    // The label column fits the longest name.
     host.style.setProperty('--name-width', 'auto');
-    while (widest() > 560 && size > 56) host.style.setProperty('--name-size', `${--size}px`);
-    const nameWidth = Math.max(380, widest() + 24);
+    const nameWidth = Math.max(250, Math.max(...rows.map((r) => r.name.scrollWidth)) + 24);
     host.style.setProperty('--name-width', `${nameWidth}px`);
-    const room = host.clientWidth - nameWidth - 190;
+    const room = host.clientWidth - nameWidth - 100;
     const max = Math.max(1, ...languages.map((l) => l.percent));
     for (const { lang, bar, pct } of rows) {
-      const width = Math.max(24, Math.round((lang.percent / max) * room));
+      const width = Math.max(20, Math.round((lang.percent / max) * room));
       bar.style.width = `${width}px`;
-      pct.style.left = `${width + 22}px`;
+      pct.style.left = `${width + 16}px`;
     }
     return rows.map((r) => r.bar);
   }
@@ -158,31 +185,63 @@
   function fitTotal(head, stamp, row, base) {
     let size = base;
     head.style.fontSize = `${size}px`;
-    while (head.offsetWidth + stamp.offsetWidth + 20 > row.clientWidth && size > 60) head.style.fontSize = `${--size}px`;
+    while (head.offsetWidth + stamp.offsetWidth + 30 > row.clientWidth && size > 40) head.style.fontSize = `${--size}px`;
   }
 
-  zine.ready(['Anton', 'Special Elite', 'Permanent Marker', 'Rubik Mono One'], () => {
+  // Makes the outro heading as wide as the half it sits in.
+  function fitWidth(el, width) {
+    let size = 40;
+    while (size < 120) {
+      el.style.fontSize = `${size + 1}px`;
+      if (el.offsetWidth > width) break;
+      size++;
+    }
+    el.style.fontSize = `${size}px`;
+  }
+
+  // A drawn barcode: bars of uneven width with gaps, not a real code.
+  function drawBarcode(host) {
+    const rand = zine.rng(66);
+    const room = host.clientWidth;
+    let used = 0;
+    while (used < room - 14) {
+      const w = [4, 4, 8, 12, 15][Math.floor(rand() * 5)];
+      const gap = [5, 8, 11][Math.floor(rand() * 3)];
+      if (used + w > room) break;
+      const bar = document.createElement('i');
+      bar.style.width = `${w}px`;
+      const space = document.createElement('i');
+      space.style.cssText = `width:${gap}px;background:transparent`;
+      host.append(bar, space);
+      used += w + gap;
+    }
+  }
+
+  zine.ready(['Anton', 'Archivo Black', 'Special Elite', 'Permanent Marker', 'Rubik Mono One'], () => {
     const $ = (id) => document.getElementById(id);
     const data = window.PAGE_DATA;
     $('head').textContent = `${data.total} ${data.total === 1 ? 'CONTRIBUTION' : 'CONTRIBUTIONS'}`;
     $('copy').append('COPY DATE', Object.assign(document.createElement('small'), { textContent: data.copyDate }));
-    fitTotal($('head'), $('copy'), $('top'), 98);
+    fitTotal($('head'), $('copy'), $('top'), 60);
     const sheet = $('sheet');
-    const graphWidth = sheet.clientWidth - 96;
-    drawGraph($('graph'), data, graphWidth);
+    drawGraph($('graph'), data, sheet.clientWidth - 52);
     drawLegend($('legend'));
     const bars = drawLanguages($('langs'), data.languages);
+    drawBarcode($('bars'));
+    fitWidth($('big'), 660);
 
-    zine.paper(sheet, { seed: 51, sides: { top: 'cut', right: 'cut', bottom: 'torn', left: 'cut' } });
+    zine.paper(sheet, { seed: 51, sides: { top: 'cut', right: 'torn', bottom: 'torn', left: 'cut' } });
     zine.paper($('head'), { seed: 52, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
     zine.paper($('langhead'), { seed: 53, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } });
     bars.forEach((bar, i) => zine.paper(bar, { seed: 60 + i, fill: '#000', rim: '#000', sides: { left: 'torn', right: 'torn', top: 'cut', bottom: 'cut' } }));
-    zine.wear($('copy'), { seed: 54, patches: 10, scratches: 4, size: 2 });
+    zine.wear($('copy'), { seed: 54, patches: 8, scratches: 3, size: 2 });
     zine.track($('track'), { seed: 5 });
+    zine.track($('track6'), { seed: 9 });
+    zine.paper($('note'), { seed: 61, sides: { top: 'cut', right: 'torn', bottom: 'cut', left: 'torn' } });
+    zine.paper($('list'), { seed: 62, sides: { top: 'torn', right: 'cut', bottom: 'torn', left: 'cut' } });
+    zine.wear($('copyright'), { seed: 64, patches: 14, scratches: 2, size: 3 });
     zine.tape($('tapeA'), { seed: 6 });
     zine.tape($('tapeB'), { seed: 7 });
-
-    $('tapeB').style.top = `${$('page').offsetHeight - 90}px`;
   });
 </script>
 </body>
