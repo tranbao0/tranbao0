@@ -3,7 +3,7 @@
 body { width: 800px; }
 #page { width: 800px; height: 475px; }
 
-#sheet { position: absolute; left: 22px; top: 30px; width: 756px; height: 432px; padding: 20px 22px 0; transform: rotate(var(--tilt, -0.8deg)); }
+#sheet { position: absolute; left: 22px; top: 26px; width: 756px; height: 444px; padding: 20px 22px 0; transform: rotate(var(--tilt, -0.8deg)); }
 .main { display: flex; gap: 24px; align-items: flex-start; }
 
 .shot { position: relative; flex: none; width: 360px; height: 312px; overflow: hidden; background: #fff; border: 5px solid #000; transform: rotate(var(--shot-tilt, 0.5deg)); }
@@ -22,6 +22,6 @@ body { width: 800px; }
 #open svg { flex: none; overflow: visible; }
 
 /* Rubber stamp "Made with SPITE" at the lower right of the sheet; each card turns and places it a little differently. */
-#made { position: absolute; z-index: 3; padding: 7px 14px 6px; border-width: 7px; border-radius: 8px; font-family: "Anton", sans-serif; font-weight: normal; line-height: 1; text-align: center; -webkit-text-stroke: 1.6px #000; }
-#made span { display: block; font-size: 41px; line-height: 33px; letter-spacing: 3px; margin-right: -3px; }
-#made b { display: block; margin-top: 11px; font-size: 74px; line-height: 58px; font-weight: normal; letter-spacing: 3px; margin-right: -3px; }
+#made { position: absolute; z-index: 3; padding: 6px 8px 5px; border-width: 7px; border-radius: 8px; font-family: "Anton", sans-serif; font-weight: normal; line-height: 1; text-align: center; -webkit-text-stroke: 1.2px #000; }
+#made span { display: block; font-size: 46px; line-height: 38px; letter-spacing: 2px; margin-right: -2px; }
+#made b { display: block; margin-top: 7px; font-size: 72px; line-height: 56px; font-weight: normal; letter-spacing: 3px; margin-right: -3px; }

@@ -7,11 +7,11 @@
 <link rel="stylesheet" href="card.css">
 <style>
   /* This card is wide: the name and caption sit in a row on top, and the ring row of the screenshot runs under them across the sheet. */
-  .main { display: block; position: relative; height: 255px; }
+  .main { display: block; position: relative; height: 278px; }
   .side { position: static; height: 86px; display: flex; align-items: flex-start; gap: 14px; }
   #name { margin: 0 0 0 -10px; flex: none; }
   #caption { margin-top: 0; }
-  .shot { position: absolute; left: 0; top: 90px; width: 508px; height: 163px; }
+  .shot { position: absolute; left: 0; top: 90px; width: 602px; height: 188px; }
   #open { right: 34px; bottom: 140px; }
   #open svg { width: 80px; height: 80px; }
   #open span { display: none; }
@@ -42,11 +42,11 @@
   card.start({
     seed: 421,
     tilt: -0.9,
-    stamp: { rot: 2.5, right: 6, bottom: 12 },
+    stamp: { rot: 2, right: 6, bottom: 14 },
     setup: () => {
       const img = document.getElementById('img');
       // The crop keeps the three rings (HIST 205, BIO 110, MATH 221) and drops the week header and the This week row.
-      card.crop(img, { sx: 32, sy: 186, sw: 400, fullWidth: 1280, boxWidth: 498 });
+      card.crop(img, { sx: 32, sy: 187, sw: 400, fullWidth: 1280, boxWidth: 592 });
       document.querySelector('.shot').setAttribute('data-soft', '');
       document.getElementById('sheet').appendChild(document.getElementById('open'));
     },
