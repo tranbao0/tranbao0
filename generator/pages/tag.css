@@ -1,7 +1,7 @@
 /* Shared look of the two link tags: a paper tag hung on a string under a strip of tape, 800x375. */
 body { width: 800px; }
 #page { width: 800px; height: 375px; }
-#wrap { position: absolute; left: 40px; top: 56px; width: 720px; height: 312px; transform-origin: 360px 40px; transform: rotate(var(--tilt)); }
+#wrap { position: absolute; left: 40px; top: 46px; width: 720px; height: 312px; transform-origin: 360px 40px; transform: rotate(var(--tilt)); }
 #paper { position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 #text { position: absolute; left: 44px; top: 80px; right: 20px; }
 #text h1 { font-family: "Anton", sans-serif; font-weight: 400; font-size: 82px; line-height: 0.97; letter-spacing: 2px; text-transform: uppercase; }
