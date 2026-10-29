@@ -1,9 +1,9 @@
 /* Project cards: an 800x475 cut-out sheet taped onto black. The screenshot is on the left, the text on the right,
-   and the tech line runs under both. All four cards share this height. */
+   and the tech line runs under both. Both cards share this height. */
 body { width: 800px; }
 #page { width: 800px; height: 475px; }
 
-#sheet { position: absolute; left: 22px; top: 36px; width: 756px; height: 418px; padding: 20px 22px 0; transform: rotate(var(--tilt, -0.8deg)); }
+#sheet { position: absolute; left: 22px; top: 30px; width: 756px; height: 432px; padding: 20px 22px 0; transform: rotate(var(--tilt, -0.8deg)); }
 .main { display: flex; gap: 24px; align-items: flex-start; }
 
 .shot { position: relative; flex: none; width: 360px; height: 312px; overflow: hidden; background: #fff; border: 5px solid #000; transform: rotate(var(--shot-tilt, 0.5deg)); }
@@ -20,3 +20,8 @@ body { width: 800px; }
 /* Link cue: a hand-drawn arrow, the same one as on the tags, and a typewriter label at the bottom right of the text column. */
 #open { position: absolute; right: 0; bottom: 0; display: flex; align-items: center; gap: 8px; transform: rotate(-2deg); font-size: 40px; line-height: 1; white-space: nowrap; -webkit-text-stroke: 1px #000; }
 #open svg { flex: none; overflow: visible; }
+
+/* Rubber stamp "Made with SPITE" at the lower right of the sheet; each card turns and places it a little differently. */
+#made { position: absolute; z-index: 3; padding: 7px 14px 6px; border-width: 7px; border-radius: 8px; font-family: "Anton", sans-serif; font-weight: normal; line-height: 1; text-align: center; -webkit-text-stroke: 1.6px #000; }
+#made span { display: block; font-size: 41px; line-height: 33px; letter-spacing: 3px; margin-right: -3px; }
+#made b { display: block; margin-top: 11px; font-size: 74px; line-height: 58px; font-weight: normal; letter-spacing: 3px; margin-right: -3px; }

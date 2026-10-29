@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="card.css">
 <style>
   .shot { background: #5c5c5c; }
+  #open { bottom: 28px; }
   .bar { position: absolute; left: 0; width: 350px; height: 92px; overflow: hidden; }
   .bar img { filter: url(#bars); }
 </style>
@@ -37,6 +38,7 @@
     seed: 431,
     tilt: -0.7,
     shotTilt: 0.4,
+    stamp: { rot: -3, right: 12, bottom: 12 },
     setup: () => {
       document.querySelectorAll('.bar img').forEach((img) => card.crop(img, { sx: 0, sy: 1182, sw: 1130, fullWidth: 2560, boxWidth: 350 }));
     },

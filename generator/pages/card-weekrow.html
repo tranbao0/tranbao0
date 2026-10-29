@@ -7,12 +7,13 @@
 <link rel="stylesheet" href="card.css">
 <style>
   /* This card is wide: the name and caption sit in a row on top, and the ring row of the screenshot runs under them across the sheet. */
-  .main { display: block; position: relative; height: 322px; }
+  .main { display: block; position: relative; height: 255px; }
   .side { position: static; height: 86px; display: flex; align-items: flex-start; gap: 14px; }
   #name { margin: 0 0 0 -10px; flex: none; }
   #caption { margin-top: 0; }
-  .shot { position: absolute; left: 0; top: 90px; width: 710px; height: 228px; }
-  #open { right: 22px; bottom: 8px; }
+  .shot { position: absolute; left: 0; top: 90px; width: 508px; height: 163px; }
+  #open { right: 34px; bottom: 140px; }
+  #open svg { width: 80px; height: 80px; }
   #open span { display: none; }
   #tech { margin-top: 6px; }
   #title { position: absolute; left: 628px; top: 42px; z-index: 2; font-family: "Anton", sans-serif; font-size: 40px; line-height: 1; letter-spacing: 2px; padding: 6px 10px 0 12px; border-width: 6px; background: #fff; transform: rotate(-4deg); }
@@ -41,10 +42,11 @@
   card.start({
     seed: 421,
     tilt: -0.9,
+    stamp: { rot: 2.5, right: 6, bottom: 12 },
     setup: () => {
       const img = document.getElementById('img');
       // The crop keeps the three rings (HIST 205, BIO 110, MATH 221) and drops the week header and the This week row.
-      card.crop(img, { sx: 32, sy: 186, sw: 400, fullWidth: 1280, boxWidth: 700 });
+      card.crop(img, { sx: 32, sy: 186, sw: 400, fullWidth: 1280, boxWidth: 498 });
       document.querySelector('.shot').setAttribute('data-soft', '');
       document.getElementById('sheet').appendChild(document.getElementById('open'));
     },

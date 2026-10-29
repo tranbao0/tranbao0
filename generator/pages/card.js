@@ -1,4 +1,4 @@
-// Shared setup for the four project cards: the sheet, the name strip, the two pieces of tape,
+// Shared setup for the project cards: the sheet, the name strip, the two pieces of tape, the "Made with SPITE" stamp,
 // and an SVG filter that turns a screenshot into high-contrast gray before the photocopy.
 (() => {
   const $ = (id) => document.getElementById(id);
@@ -38,6 +38,18 @@
       `<div id="open"><span>open repo</span><svg width="62" height="62" viewBox="0 0 130 130" fill="none" stroke="#000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><path d="M10 112 C 30 70, 70 40, 108 22"/><path d="M62 14 L 112 18 L 104 66"/></svg></div>`);
   }
 
+  // Presses the "Made with SPITE" rubber stamp on the sheet. `rot` is the turn in degrees, `right` and `bottom` place it
+  // against the sheet's lower right corner, and `seed` picks the pattern of worn ink.
+  function addStamp({ rot, right, bottom, seed }) {
+    const el = document.createElement('div');
+    el.id = 'made';
+    el.className = 'stamp';
+    el.style.cssText = `right:${right}px;bottom:${bottom}px;transform:rotate(${rot}deg)`;
+    el.innerHTML = '<span>MADE WITH</span><b>SPITE</b>';
+    $('sheet').appendChild(el);
+    zine.wear(el, { seed, patches: 40, scratches: 0, size: 2.5 });
+  }
+
   // Shrinks the name until it fits the text column, so a long project name never spills out.
   function fitName() {
     const name = $('name');
@@ -46,7 +58,7 @@
     while (name.offsetWidth > room && size > 48) name.style.fontSize = `${--size}px`;
   }
 
-  async function start({ seed, tilt, shotTilt, setup }) {
+  async function start({ seed, tilt, shotTilt, stamp, setup }) {
     if (tilt !== undefined) $('sheet').style.setProperty('--tilt', `${tilt}deg`);
     if (shotTilt !== undefined) document.querySelector('.shot').style.setProperty('--shot-tilt', `${shotTilt}deg`);
     addOpenRepo();
@@ -58,6 +70,7 @@
       zine.tape($('tapeA'), { seed: seed + 2 });
       zine.tape($('tapeB'), { seed: seed + 3 });
       if (setup) setup();
+      addStamp({ seed: seed + 4, ...stamp });
     });
   }
 
