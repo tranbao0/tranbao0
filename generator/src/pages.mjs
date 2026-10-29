@@ -44,10 +44,13 @@ async function cutOutTiles(renderer, file, { count, seed }) {
 }
 
 // Crops every tile to its ink box, as palette PNGs: [{ x, y, width, height, normal }].
-async function croppedLetters(tiles) {
+// A tile that is not transparent, or that has no ink, stops the build.
+export async function croppedLetters(tiles) {
   const letters = [];
-  for (const tile of tiles) {
+  for (const [i, tile] of tiles.entries()) {
+    if (!tile.alpha) throw new Error(`letter ${i}: the tile must be transparent`);
     const box = inkBox(tile);
+    if (box.width <= 0 || box.height <= 0) throw new Error(`letter ${i}: the tile has no ink`);
     letters.push({ ...box, normal: await encodePalettePng(cropLayer(tile, box)) });
   }
   return letters;
