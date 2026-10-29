@@ -214,6 +214,8 @@ test('the daily job checks the same outro words and the size of the spread', asy
   const flat = workflow.replace(/"\s*\n\s*r"/g, '');
   assert.ok(flat.includes(OUTRO_ALT.replace(/\./g, '\\.')), 'the workflow template holds the outro words');
   assert.ok(workflow.includes('height != 750'), 'the workflow checks the height of the spread');
+  const page = await readFile(here('../pages/activity.html'), 'utf8');
+  assert.ok(page.includes('#page { height: 750px; }'), 'the page is as tall as the daily job expects');
 });
 
 test('every alt text from the edge-case fixtures matches the form that the daily job expects', async () => {

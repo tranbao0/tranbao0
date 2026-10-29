@@ -3,7 +3,7 @@
 // The activity page reads live data from the GitHub API and needs GITHUB_TOKEN.
 import { mkdir } from 'node:fs/promises';
 import { openRenderer } from './src/render.mjs';
-import { assetsDir, buildCover, buildStatic } from './src/pages.mjs';
+import { assetsDir, buildCover, buildProjects, buildStatic } from './src/pages.mjs';
 import { buildActivity } from './src/activity.mjs';
 
 const card = (name, seed) => (r) => buildStatic(r, { file: `card-${name}.html`, out: `card-${name}.png`, seed, width: 800 });
@@ -12,11 +12,9 @@ const tag = (name, seed) => (r) => buildStatic(r, { file: `tag-${name}.html`, ou
 const jobs = {
   cover: (r) => buildCover(r),
   'profile-credits': (r) => buildStatic(r, { file: 'profile-credits.html', out: 'profile-credits.png', seed: 202 }),
-  projects: (r) => buildStatic(r, { file: 'projects.html', out: 'projects.png', seed: 404 }),
+  projects: (r) => buildProjects(r),
   'card-weekrow': card('weekrow', 411),
   'card-songranking': card('songranking', 412),
-  'card-fitttt': card('fitttt', 413),
-  'card-beautiful-nail': card('beautiful-nail', 414),
   'tag-fan-letter': tag('fan-letter', 611),
   'tag-kofi': tag('kofi', 612),
   activity: (r) => buildActivity(r),

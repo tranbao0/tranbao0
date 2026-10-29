@@ -107,7 +107,7 @@
   <div class="track" id="track2">TRACK 02 - Member Profile</div>
   <div class="track" id="track3">TRACK 03 - Credits</div>
 
-  <div class="tape-piece" id="tapeA" style="left:700px;top:20px;transform:rotate(34deg)"></div>
+  <div class="tape-piece" id="tapeA" style="left:665px;top:20px;transform:rotate(34deg)"></div>
   <div class="tape-piece" id="tapeB" style="left:-112px;top:812px;transform:rotate(-36deg)"></div>
   <div class="tape-piece" id="tapeC" style="left:1500px;top:800px;transform:rotate(-36deg)"></div>
 </div>
@@ -115,10 +115,10 @@
 <script>
   // Each group is a role followed by its stamps. Stamps wrap onto the next line.
   const GROUPS = [
-    ['Languages', [['Java', 'a'], ['Python', 'c'], ['TypeScript', 'b'], ['JavaScript', 'b'], ['Swift', 'a'], ['C', 'd'], ['SQL', 'c'], ['HTML/CSS', 'a']]],
+    ['Languages', [['Java', 'a'], ['Python', 'a'], ['TypeScript', 'b'], ['JavaScript', 'b'], ['Swift', 'a'], ['C', 'd'], ['SQL', 'b'], ['HTML/CSS', 'a']]],
     ['Frameworks', [['Spring Boot', 'b'], ['React', 'c'], ['Preact', 'a'], ['Node.js + Express', 'a'], ['SwiftUI', 'a'], ['Jakarta Servlets/JSP', 'b']]],
-    ['Data', [['MySQL', 'a'], ['MongoDB', 'e'], ['SQLite', 'c'], ['Firebase', 'b']]],
-    ['Tools', [['Git', 'a'], ['GitHub Actions', 'b'], ['Playwright', 'c'], ['Vitest', 'a'], ['Cloudflare Workers', 'b'], ['Maven', 'c']]],
+    ['Data', [['MySQL', 'a'], ['MongoDB', 'b'], ['SQLite', 'a'], ['Firebase', 'b']]],
+    ['Tools', [['Git', 'a'], ['GitHub Actions', 'b'], ['Playwright', 'a'], ['Vitest', 'a'], ['Cloudflare Workers', 'b'], ['Maven', 'c']]],
   ];
 
   // These names are set in the wide heavy face, which keeps its thin strokes when copied. The other names use the narrow face.
@@ -185,6 +185,7 @@
         const s = document.createElement('div');
         s.className = `s ${kind}${WIDE.has(text) ? ' wide' : ''}`;
         s.textContent = text;
+        s.setAttribute('data-clean', '');
         s.style.setProperty('--r', `${((rand() - 0.5) * 4).toFixed(2)}deg`);
         s.style.setProperty('--y', `${Math.round((rand() - 0.5) * 6)}px`);
         g.appendChild(s);
