@@ -2,7 +2,7 @@
 // Usage: node build.mjs [page ...]   (no argument builds every page except activity)
 // The activity page reads live data from the GitHub API and needs GITHUB_TOKEN.
 import { mkdir } from 'node:fs/promises';
-import { openRenderer } from './src/render.mjs';
+import { openRenderer } from '@tranbao0/printshop/core/render';
 import { assetsDir, buildCover, buildProjects, buildStatic } from './src/pages.mjs';
 import { buildActivity } from './src/activity.mjs';
 

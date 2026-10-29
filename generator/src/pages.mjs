@@ -1,8 +1,9 @@
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { photocopy, decodeRgba } from './photocopy.mjs';
-import { encodePalettePng, decodeGrayPng, compositeGray } from './encode.mjs';
+import { compositeGray, cropLayer, decodeGrayPng, encodePalettePng, inkBox } from '@tranbao0/printshop/core/encode';
+import { copyLayer, renderCopy } from '@tranbao0/printshop/core/pipeline';
+import { photocopy, photocopyDefaults } from '@tranbao0/printshop/packs/zine';
 import { assertHopsClearOf, coverSvg } from './cover-svg.mjs';
 import { projectsSvg, PROJECTS_LETTERS } from './projects-svg.mjs';
 
@@ -10,65 +11,46 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const pagesDir = path.join(root, 'pages');
 export const assetsDir = path.resolve(root, '..', 'assets');
 
-// Renders a page layer and runs it through the photocopy filter. Returns { gray, alpha, width, height }.
-async function renderCopy(renderer, file, { layer, transparent, seed, width, data }) {
-  const { png, zones } = await renderer.render(path.join(pagesDir, file), { layer, transparent, width, data });
-  return photocopy(await decodeRgba(png), { seed, zones });
-}
-
-// The same, encoded as a palette PNG buffer.
-async function copyLayer(renderer, file, options) {
-  return encodePalettePng(await renderCopy(renderer, file, options));
-}
+// Every page goes through the photocopy look of printshop's zine pack.
+// The drum streaks of the look are counted per 1600 px of width. These pages count them over the whole page,
+// so a narrower page gets proportionally more streaks and keeps the same streak density as a full page.
+const PAGE_WIDTH = 1600;
+export const withStreakDensity = (width, filterOptions) => ({
+  toner: { ...photocopyDefaults.toner, streaks: (photocopyDefaults.toner.streaks * PAGE_WIDTH) / width },
+  ...filterOptions,
+});
+const copy = (renderer, file, { layer, transparent, seed, width = PAGE_WIDTH, data, filterOptions }) =>
+  copyLayer(renderer, path.join(pagesDir, file), {
+    layer, transparent, seed, width, data, filter: photocopy, filterOptions: withStreakDensity(width, filterOptions),
+  });
+const copyGray = (renderer, file, { layer, transparent, seed, width = PAGE_WIDTH, data, filterOptions }) =>
+  renderCopy(renderer, path.join(pagesDir, file), {
+    layer, transparent, seed, width, data, filter: photocopy, filterOptions: withStreakDensity(width, filterOptions),
+  });
 
 // A page that is one still image. `width` is 1600 for full pages and 800 for half-width cards and tags.
 export async function buildStatic(renderer, { file, out, seed, width = 1600, data }) {
-  const png = await copyLayer(renderer, file, { layer: 'all', transparent: false, seed, width, data });
+  const png = await copy(renderer, file, { layer: 'all', transparent: false, seed, width, data });
   await writeFile(path.join(assetsDir, out), png);
   return [{ path: path.join(assetsDir, out), bytes: png.length }];
-}
-
-// Bounding box of the opaque pixels of a layer.
-function inkBox({ alpha, width, height }) {
-  let x0 = width;
-  let y0 = height;
-  let x1 = -1;
-  let y1 = -1;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      if (!alpha[y * width + x]) continue;
-      if (x < x0) x0 = x;
-      if (x > x1) x1 = x;
-      if (y < y0) y0 = y;
-      if (y > y1) y1 = y;
-    }
-  }
-  return { x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 };
-}
-
-function cropLayer({ gray, alpha, width }, box) {
-  const out = { gray: new Uint8Array(box.width * box.height), alpha: new Uint8Array(box.width * box.height), width: box.width, height: box.height };
-  for (let y = 0; y < box.height; y++) {
-    const from = (box.y + y) * width + box.x;
-    out.gray.set(gray.subarray(from, from + box.width), y * box.width);
-    out.alpha.set(alpha.subarray(from, from + box.width), y * box.width);
-  }
-  return out;
 }
 
 // The tiles of a lettered page, each as its own full-page photocopy with the same page seed.
 // The page takes ?letter=N, which rides along in the layer string.
 async function cutOutTiles(renderer, file, { count, seed }) {
   const tiles = [];
-  for (let i = 0; i < count; i++) tiles.push(await renderCopy(renderer, file, { layer: `title&letter=${i}`, transparent: true, seed }));
+  for (let i = 0; i < count; i++) tiles.push(await copyGray(renderer, file, { layer: `title&letter=${i}`, transparent: true, seed }));
   return tiles;
 }
 
 // Crops every tile to its ink box, as palette PNGs: [{ x, y, width, height, normal }].
-async function croppedLetters(tiles) {
+// A tile that is not transparent, or that has no ink, stops the build.
+export async function croppedLetters(tiles) {
   const letters = [];
-  for (const tile of tiles) {
+  for (const [i, tile] of tiles.entries()) {
+    if (!tile.alpha) throw new Error(`letter ${i}: the tile must be transparent`);
     const box = inkBox(tile);
+    if (box.width <= 0 || box.height <= 0) throw new Error(`letter ${i}: the tile has no ink`);
     letters.push({ ...box, normal: await encodePalettePng(cropLayer(tile, box)) });
   }
   return letters;
@@ -80,7 +62,7 @@ function stillOf(baseGray, tiles) {
 }
 
 export async function buildCover(renderer) {
-  const base = await copyLayer(renderer, 'cover.html', { layer: 'base', transparent: false, seed: 101 });
+  const base = await copy(renderer, 'cover.html', { layer: 'base', transparent: false, seed: 101 });
   const baseGray = await decodeGrayPng(base);
   const tiles = await cutOutTiles(renderer, 'cover.html', { count: 6, seed: 102 });
   const letters = await croppedLetters(tiles);
@@ -106,7 +88,7 @@ export async function buildCover(renderer) {
 
 // The PROJECTS strip: the same cut-out letters as the cover title, but they only hop.
 export async function buildProjects(renderer) {
-  const base = await copyLayer(renderer, 'projects.html', { layer: 'base', transparent: false, seed: 404 });
+  const base = await copy(renderer, 'projects.html', { layer: 'base', transparent: false, seed: 404 });
   const baseGray = await decodeGrayPng(base);
   const tiles = await cutOutTiles(renderer, 'projects.html', { count: PROJECTS_LETTERS, seed: 405 });
   const letters = await croppedLetters(tiles);

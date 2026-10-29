@@ -106,22 +106,28 @@ test('the build stops when a hopping letter would reach the header', async () =>
   const clear = [{ x: 200, y: 400, width: 100 }, { x: 320, y: 100 + HOP + 10, width: 100 }, { x: 1000, y: 120, width: 300 }];
   assert.doesNotThrow(() => assertHopsClearOf(header, clear));
   const blocked = [{ x: 200, y: 400, width: 100 }, { x: 320, y: 100 + HOP - 10, width: 100 }];
-  assert.throws(() => assertHopsClearOf(header, blocked), /letter 1 hops into the header/);
+  assert.throws(() => assertHopsClearOf(header, blocked), /cover letter 1 hops into "header"/);
   // The W (letter 0) hops over the header label on purpose, so it may sit close under the header.
   assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 200, y: 110, width: 100 }]));
   // Only the W is exempt: the same box as the second letter stops the build.
-  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 200, y: 110, width: 100 }]), /letter 1 hops into the header/);
+  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 200, y: 110, width: 100 }]), /cover letter 1 hops into "header"/);
   // The margin is 4 px: a hop top exactly at the header bottom plus 4 passes, one pixel higher stops the build.
   const bottom = header.y + header.h;
   assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 320, y: bottom + 4 + HOP, width: 100 }]));
-  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 320, y: bottom + 3 + HOP, width: 100 }]), /hops into the header/);
+  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 320, y: bottom + 3 + HOP, width: 100 }]), /hops into "header"/);
   // A letter fully left or right of the header may hop above its bottom.
   assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 0, y: 40, width: header.x - 4 }, { x: header.x + header.w + 4, y: 40, width: 50 }]));
-  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 0, y: 40, width: header.x - 3 }]), /hops into the header/);
+  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 0, y: 40, width: header.x - 3 }]), /hops into "header"/);
 });
 
 test('the build stops when the header box is missing or empty', async () => {
   const { assertHopsClearOf } = await import('../src/cover-svg.mjs');
   assert.throws(() => assertHopsClearOf(undefined, []), /header box is missing or empty/);
   assert.throws(() => assertHopsClearOf({ x: 0, y: 0, w: 0, h: 0 }, []), /header box is missing or empty/);
+});
+
+test('the build stops when a tile sits so high that the pack would cut the hop', () => {
+  const high = letters.map((l, i) => ({ ...l, y: i === 3 ? 60 : l.y }));
+  assert.throws(() => coverSvg({ base: png, letters: high, width: 1600, height: 900, label: 'test' }), /hop would be cut from 95 px to 59 px/);
+  assert.match(svg, /translateY\(-95px\)/);
 });

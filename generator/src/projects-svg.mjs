@@ -1,11 +1,13 @@
 // Animated PROJECTS strip: a base photocopy (label, slip, tape) and one cut-out per letter.
 // The letters only hop: from left to right, each rises and drops back in one stop-motion step, then the strip rests.
-// The per-letter machinery (tiles, wave keyframes, stop-motion step, reduced motion) is shared with the cover.
-import { STEP, REST, sec, waveKeyframes, REDUCED_MOTION_CSS, letterTiles, svgDocument } from './cover-svg.mjs';
+// The per-letter machinery (tiles, wave keyframes, stop-motion step, reduced motion) comes from printshop, like the cover's.
+import { REDUCED_MOTION_CSS, STEP, letterTiles, sec, svgDocument, waveKeyframes } from '@tranbao0/printshop/core/svg-anim';
+import { fitHop } from '@tranbao0/printshop/packs/zine';
 
 export const PROJECTS_LETTERS = 8;
 
 const LEAD = 0.4; // bare strip before the first wave
+const REST = 3; // seconds of rest after each wave
 const REFERENCE_HOP = 70; // px, the hop measured from the reference video, at the size of the cover title
 const TITLE_LOWERCASE_INK = 180; // px, height of the lowercase glyphs of the cover title (185 * the 0.972 title scale)
 const STRIP_LETTER_INK = 94; // px, mean glyph height of the PROJECTS letters
@@ -16,8 +18,7 @@ const MARGIN = 1; // px of strip kept above the highest hopping letter
 // space above the highest letter, so a hopping letter stays fully inside the strip.
 export function projectsHop(letters) {
   const wanted = Math.round(TONE_DOWN * (REFERENCE_HOP / TITLE_LOWERCASE_INK) * STRIP_LETTER_INK);
-  const free = Math.floor(Math.min(...letters.map((l) => l.y))) - MARGIN;
-  return Math.max(0, Math.min(wanted, free));
+  return fitHop(letters, wanted, MARGIN);
 }
 
 function motionCss(letters) {
