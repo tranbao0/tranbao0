@@ -10,11 +10,12 @@
 //   REST                    nothing moves
 //   later waves             the flips only, forever, with the same rest between them
 
-const STEP = 5 / 60; // one stop-motion step: 5 frames at 60 fps
+// The helpers marked "shared" also build the PROJECTS strip (projects-svg.mjs).
+export const STEP = 5 / 60; // one stop-motion step: 5 frames at 60 fps
 const LEAD = 0.4;
 const HOLD = 20 / 60;
-const REST = 3;
-const HOP = 70; // px a hopping letter rises
+export const REST = 3;
+export const HOP = 70; // px a hopping letter rises
 
 // Entrance: for each step, which letters show and how much of the way to the final place they have
 // travelled (0 = piled at the middle of the word, 1 = in place). Letter numbers count from the left.
@@ -28,8 +29,46 @@ const entranceSteps = (count) => {
   ];
 };
 
-const pct = (v) => `${+(v * 100).toFixed(4)}%`;
-const sec = (v) => `${+v.toFixed(4)}s`;
+export const pct = (v) => `${+(v * 100).toFixed(4)}%`;
+export const sec = (v) => `${+v.toFixed(4)}s`;
+
+// Shared. Keyframes for a wave in which item i is "on" for one STEP and "off" for the rest of the period.
+export function waveKeyframes(name, i, period, on, off) {
+  const start = pct((i * STEP) / period);
+  const end = pct(((i + 1) * STEP) / period);
+  return `@keyframes ${name} { ${i === 0 ? '' : `0% { ${off} } `}${start} { ${on} } ${end} { ${off} } 100% { ${off} } }`;
+}
+
+// Shared. Switches every animation off for readers who ask for less motion.
+export const REDUCED_MOTION_CSS = `
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; }
+  }`;
+
+const dataUri = (png) => `data:image/png;base64,${png.toString('base64')}`;
+
+// Shared. One group per letter: an outer group for entrance moves, an inner one for the hop, then the clipping and its inverted twin if it has one.
+// The two PNGs of a letter have the same size and place, so a flip never shifts the letter.
+export function letterTiles(letters) {
+  return letters
+    .map((l, i) => {
+      const image = (png, cls = '') => `<image ${cls}x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" href="${dataUri(png)}"/>`;
+      return `<g id="l${i}" class="letter"><g class="hop">\n  ${image(l.normal)}${l.inverted ? `\n  ${image(l.inverted, 'class="twin" ')}` : ''}\n</g></g>`;
+    })
+    .join('\n');
+}
+
+// Shared. The SVG wrapper: a black sheet, the base photocopy, then the letters.
+export function svgDocument({ width, height, label, css, base, tiles }) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${label}">
+<style>${css}
+</style>
+<rect width="${width}" height="${height}" fill="#000"/>
+<image width="${width}" height="${height}" href="${dataUri(base)}"/>
+${tiles}
+</svg>
+`;
+}
 
 function motionCss(letters) {
   const count = letters.length;
@@ -57,9 +96,8 @@ function motionCss(letters) {
   #l${i} { animation: enter-${i} ${sec(total)} step-end forwards; }`;
 
     // The flip: the inverted twin shows for letter i's step of every wave.
-    const flip = [`${pct((i * STEP) / period)} { opacity: 1; }`, `${pct(((i + 1) * STEP) / period)} { opacity: 0; }`];
     css += `
-  @keyframes flip-${i} { ${i === 0 ? '' : '0% { opacity: 0; } '}${flip.join(' ')} 100% { opacity: 0; } }
+  ${waveKeyframes(`flip-${i}`, i, period, 'opacity: 1;', 'opacity: 0;')}
   #l${i} .twin { opacity: 0; animation: flip-${i} ${sec(period)} step-end ${sec(waveStart)} infinite; }`;
 
     // The hop: once, in the first wave, for the step in which letter i / 2 flips.
@@ -70,29 +108,11 @@ function motionCss(letters) {
     }
   });
 
-  css += `
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; }
-  }`;
-  return css;
+  return css + REDUCED_MOTION_CSS;
 }
 
 // `letters` lists the title tiles from left to right, each { normal, inverted, x, y, width, height }.
 // The two PNGs of a tile have the same size and place, so a flip never shifts the letter.
 export function coverSvg({ base, letters, width, height, label }) {
-  const data = (png) => `data:image/png;base64,${png.toString('base64')}`;
-  const tiles = letters
-    .map((l, i) => `<g id="l${i}" class="letter"><g class="hop">
-  <image x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" href="${data(l.normal)}"/>
-  <image class="twin" x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" href="${data(l.inverted)}"/>
-</g></g>`)
-    .join('\n');
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${label}">
-<style>${motionCss(letters)}
-</style>
-<rect width="${width}" height="${height}" fill="#000"/>
-<image width="${width}" height="${height}" href="${data(base)}"/>
-${tiles}
-</svg>
-`;
+  return svgDocument({ width, height, label, css: motionCss(letters), base, tiles: letterTiles(letters) });
 }

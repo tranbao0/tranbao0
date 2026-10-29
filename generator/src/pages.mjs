@@ -4,6 +4,7 @@ import path from 'node:path';
 import { photocopy, decodeRgba } from './photocopy.mjs';
 import { encodePalettePng, decodeGrayPng, compositeGray } from './encode.mjs';
 import { coverSvg } from './cover-svg.mjs';
+import { projectsSvg, PROJECTS_LETTERS } from './projects-svg.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const pagesDir = path.join(root, 'pages');
@@ -55,41 +56,49 @@ function cropLayer({ gray, alpha, width }, box) {
   return out;
 }
 
-// The six title tiles, each as its own full-page photocopy in two clippings: as cut, and inverted.
+// The tiles of a lettered page, each as its own full-page photocopy: as cut, and, if `inverted`, flipped.
 // Both clippings use the same page seed, so the paper edges wobble the same way and the two line up pixel for pixel.
-// The title page takes ?letter=N and ?inverted=1; they ride along in the layer string.
-const TITLE_LETTERS = 6;
-
-async function titleTiles(renderer) {
+// The page takes ?letter=N and ?inverted=1; they ride along in the layer string.
+async function cutOutTiles(renderer, file, { count, seed, inverted = false }) {
   const tiles = [];
-  for (let i = 0; i < TITLE_LETTERS; i++) {
-    const copy = (flipped) => renderCopy(renderer, 'cover.html', { layer: `title&letter=${i}${flipped ? '&inverted=1' : ''}`, transparent: true, seed: 102 });
+  for (let i = 0; i < count; i++) {
+    const copy = (flipped) => renderCopy(renderer, file, { layer: `title&letter=${i}${flipped ? '&inverted=1' : ''}`, transparent: true, seed });
     const normal = await copy(false);
-    const inverted = await copy(true);
-    if (!normal.alpha.every((a, k) => a === inverted.alpha[k])) throw new Error(`Title letter ${i}: the two clippings do not line up`);
-    tiles.push({ normal, inverted });
+    if (!inverted) {
+      tiles.push({ normal });
+      continue;
+    }
+    const twin = await copy(true);
+    if (!normal.alpha.every((a, k) => a === twin.alpha[k])) throw new Error(`${file} letter ${i}: the two clippings do not line up`);
+    tiles.push({ normal, inverted: twin });
   }
   return tiles;
 }
 
-export async function buildCover(renderer) {
-  const base = await copyLayer(renderer, 'cover.html', { layer: 'base', transparent: false, seed: 101 });
-  const baseGray = await decodeGrayPng(base);
-  const tiles = await titleTiles(renderer);
-
-  // The still shows the title as cut, tiles stacked left to right like the animated one.
-  let still = baseGray;
-  for (const tile of tiles) still = compositeGray(still, tile.normal);
-
+// Crops every tile to the ink box of its normal clipping, as palette PNGs: [{ x, y, width, height, normal, inverted? }].
+async function croppedLetters(tiles) {
   const letters = [];
   for (const { normal, inverted } of tiles) {
     const box = inkBox(normal);
     letters.push({
       ...box,
       normal: await encodePalettePng(cropLayer(normal, box)),
-      inverted: await encodePalettePng(cropLayer(inverted, box)),
+      ...(inverted && { inverted: await encodePalettePng(cropLayer(inverted, box)) }),
     });
   }
+  return letters;
+}
+
+// A still made of a base photocopy with the tiles stacked on it from left to right, like the animated SVG.
+function stillOf(baseGray, tiles) {
+  return tiles.reduce((still, tile) => compositeGray(still, tile.normal), baseGray);
+}
+
+export async function buildCover(renderer) {
+  const base = await copyLayer(renderer, 'cover.html', { layer: 'base', transparent: false, seed: 101 });
+  const baseGray = await decodeGrayPng(base);
+  const tiles = await cutOutTiles(renderer, 'cover.html', { count: 6, seed: 102, inverted: true });
+  const letters = await croppedLetters(tiles);
   const svg = coverSvg({
     base,
     letters,
@@ -97,7 +106,7 @@ export async function buildCover(renderer) {
     height: baseGray.height,
     label: 'We code - Bao Tran, Software Engineering at SJSU, on a burnt photocopied sheet',
   });
-  const stillPng = await encodePalettePng(still);
+  const stillPng = await encodePalettePng(stillOf(baseGray, tiles));
   await writeFile(path.join(assetsDir, 'cover-still.png'), stillPng);
   await writeFile(path.join(assetsDir, 'cover.svg'), svg);
   return [
@@ -105,5 +114,27 @@ export async function buildCover(renderer) {
     { path: path.join(assetsDir, 'cover.svg'), bytes: Buffer.byteLength(svg) },
     { path: 'embedded base layer', bytes: base.length },
     { path: 'embedded title tiles', bytes: letters.reduce((sum, l) => sum + l.normal.length + l.inverted.length, 0) },
+  ];
+}
+
+// The PROJECTS strip: the same cut-out letters as the cover title, but they only hop.
+export async function buildProjects(renderer) {
+  const base = await copyLayer(renderer, 'projects.html', { layer: 'base', transparent: false, seed: 404 });
+  const baseGray = await decodeGrayPng(base);
+  const tiles = await cutOutTiles(renderer, 'projects.html', { count: PROJECTS_LETTERS, seed: 405 });
+  const letters = await croppedLetters(tiles);
+  const svg = projectsSvg({
+    base,
+    letters,
+    width: baseGray.width,
+    height: baseGray.height,
+    label: 'Track 04, Title Track: Projects. The title track is Weekrow.',
+  });
+  const stillPng = await encodePalettePng(stillOf(baseGray, tiles));
+  await writeFile(path.join(assetsDir, 'projects.png'), stillPng);
+  await writeFile(path.join(assetsDir, 'projects.svg'), svg);
+  return [
+    { path: path.join(assetsDir, 'projects.png'), bytes: stillPng.length },
+    { path: path.join(assetsDir, 'projects.svg'), bytes: Buffer.byteLength(svg) },
   ];
 }
