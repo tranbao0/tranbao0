@@ -1,47 +1,100 @@
-// Animated cover: a base photocopy, a transparent title layer that flickers,
-// and a soft light band that sweeps down the page like a copier lamp.
+// Animated cover: a base photocopy and one cut-out per title letter, each with an inverted twin.
+// Everything moves in stop-motion steps (no easing, no fades), like a title cut from magazine letters.
+//
+// Timeline, in seconds:
+//   LEAD                    bare paper
+//   entrance (3 steps)      one letter alone at the middle, a small cluster, every letter bunched, then all in place
+//   HOLD                    nothing moves
+//   first wave              one letter at a time flips to its inverted twin for one step,
+//                           and the next letter hops up while it waits
+//   REST                    nothing moves
+//   later waves             the flips only, forever, with the same rest between them
 
-const CYCLE = 5; // seconds per sweep and pause
+const STEP = 5 / 60; // one stop-motion step: 5 frames at 60 fps
+const LEAD = 0.4;
+const HOLD = 20 / 60;
+const REST = 3;
+const HOP = 34; // px a waiting letter hops up
+const BUNCHED = 0.38; // how far from the middle the bunched letters sit, as a share of the final spread
+const CLUSTER = 0.1; // the same for the small cluster
 
-const css = `
-  .sweep { animation: sweep ${CYCLE}s ease-in-out infinite; }
-  .flicker { animation: flicker ${CYCLE}s step-end infinite; }
-  @keyframes sweep {
-    0% { transform: translateY(0); }
-    52% { transform: translateY(1190px); }
-    100% { transform: translateY(1190px); }
-  }
-  @keyframes flicker {
-    0%, 100% { opacity: 1; transform: translate(0, 0); }
-    21% { opacity: 0.3; transform: translate(3px, -2px); }
-    22.6% { opacity: 0.8; transform: translate(-2px, 2px); }
-    24% { opacity: 1; transform: translate(0, 0); }
-    73% { opacity: 0.45; transform: translate(0, 4px); }
-    74.4% { opacity: 1; transform: translate(0, 0); }
-  }
+// Entrance: for each step, which letters show and how bunched they are. Letter numbers count from the left.
+const entranceSteps = (count) => {
+  const middle = Math.floor(count / 2) + 1;
+  return [
+    { shown: [middle], spread: CLUSTER },
+    { shown: [0, 1, middle], spread: CLUSTER },
+    { shown: Array.from({ length: count }, (_, i) => i), spread: BUNCHED },
+  ];
+};
+
+// Small fixed offsets so the bunched letters pile up unevenly.
+const bunchDy = [-6, 12, -14, 8, -10, 14];
+
+const pct = (v) => `${+(v * 100).toFixed(4)}%`;
+const sec = (v) => `${+v.toFixed(4)}s`;
+
+function motionCss(letters) {
+  const count = letters.length;
+  const entrance = entranceSteps(count);
+  const entranceEnd = LEAD + entrance.length * STEP;
+  const waveStart = entranceEnd + HOLD;
+  const wave = count * STEP;
+  const period = wave + REST;
+  const middle = letters.reduce((sum, l) => sum + l.x + l.width / 2, 0) / count;
+  let css = '';
+
+  letters.forEach((l, i) => {
+    const centre = l.x + l.width / 2;
+    // Keyframe 0 is the bare paper; each entrance step starts after the lead and lasts one STEP.
+    const total = LEAD + entrance.length * STEP;
+    const frames = [`0% { opacity: 0; transform: translate(0, 0); }`];
+    entrance.forEach((s, k) => {
+      const dx = (middle - centre) * (1 - s.spread);
+      const shown = s.shown.includes(i);
+      frames.push(`${pct((LEAD + k * STEP) / total)} { opacity: ${shown ? 1 : 0}; transform: translate(${dx.toFixed(1)}px, ${bunchDy[i % bunchDy.length]}px); }`);
+    });
+    frames.push(`100% { opacity: 1; transform: translate(0, 0); }`);
+    css += `
+  @keyframes enter-${i} { ${frames.join(' ')} }
+  #l${i} { animation: enter-${i} ${sec(total)} step-end forwards; }`;
+
+    // The flip: the inverted twin shows for letter i's step of every wave.
+    css += `
+  @keyframes flip-${i} { 0% { opacity: 0; } ${pct((i * STEP) / period)} { opacity: 1; } ${pct(((i + 1) * STEP) / period)} { opacity: 0; } 100% { opacity: 0; } }
+  #l${i} .twin { opacity: 0; animation: flip-${i} ${sec(period)} step-end ${sec(waveStart)} infinite; }`;
+
+    // The hop: once, in the first wave, while the letter before it flips.
+    if (i > 0) {
+      css += `
+  @keyframes hop-${i} { 0% { transform: translateY(0); } ${pct((i - 1) / i)} { transform: translateY(${-HOP}px); } 100% { transform: translateY(0); } }
+  #l${i} .hop { animation: hop-${i} ${sec(i * STEP)} step-end ${sec(waveStart)}; }`;
+    }
+  });
+
+  css += `
   @media (prefers-reduced-motion: reduce) {
-    .sweep, .flicker { animation: none; }
+    * { animation: none !important; }
   }`;
+  return css;
+}
 
-export function coverSvg({ base, title, width, height, label }) {
+// `letters` lists the title tiles from left to right, each { normal, inverted, x, y, width, height }.
+// The two PNGs of a tile have the same size and place, so a flip never shifts the letter.
+export function coverSvg({ base, letters, width, height, label }) {
   const data = (png) => `data:image/png;base64,${png.toString('base64')}`;
-  const band = 290;
+  const tiles = letters
+    .map((l, i) => `<g id="l${i}" class="letter"><g class="hop">
+  <image x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" href="${data(l.normal)}"/>
+  <image class="twin" x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" href="${data(l.inverted)}"/>
+</g></g>`)
+    .join('\n');
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${label}">
-<style>${css}
+<style>${motionCss(letters)}
 </style>
-<defs>
-  <linearGradient id="lamp" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-    <stop offset="0.55" stop-color="#fff" stop-opacity="0.2"/>
-    <stop offset="0.86" stop-color="#fff" stop-opacity="0.45"/>
-    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-  </linearGradient>
-  <clipPath id="sheet"><rect x="56" y="56" width="1488" height="788"/></clipPath>
-</defs>
 <rect width="${width}" height="${height}" fill="#000"/>
 <image width="${width}" height="${height}" href="${data(base)}"/>
-<g class="flicker"><image width="${width}" height="${height}" href="${data(title)}"/></g>
-<g clip-path="url(#sheet)"><rect class="sweep" x="0" y="${-band}" width="${width}" height="${band}" fill="url(#lamp)"/></g>
+${tiles}
 </svg>
 `;
 }
