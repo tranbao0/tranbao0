@@ -1,19 +1,22 @@
-/* Project cards: an 800px wide cut-out sheet taped onto black. All four cards share this height. */
+/* Project cards: an 800x475 cut-out sheet taped onto black. The screenshot is on the left, the text on the right,
+   and the tech line runs under both. All four cards share this height. */
 body { width: 800px; }
-#page { width: 800px; height: 1010px; }
+#page { width: 800px; height: 475px; }
 
-#sheet { position: absolute; left: 26px; top: 52px; width: 748px; height: 940px; padding: 24px 26px 0; transform: rotate(var(--tilt, -0.8deg)); }
+#sheet { position: absolute; left: 22px; top: 36px; width: 756px; height: 418px; padding: 20px 22px 0; transform: rotate(var(--tilt, -0.8deg)); }
+.main { display: flex; gap: 24px; align-items: flex-start; }
 
-.shot { position: relative; width: 696px; height: 470px; overflow: hidden; background: #fff; border: 6px solid #000; transform: rotate(var(--shot-tilt, 0.5deg)); }
+.shot { position: relative; flex: none; width: 360px; height: 312px; overflow: hidden; background: #fff; border: 5px solid #000; transform: rotate(var(--shot-tilt, 0.5deg)); }
 .shot img { position: absolute; display: block; max-width: none; }
 
-#name { position: relative; width: fit-content; height: 110px; margin: 22px 0 6px -14px; padding: 0 42px 0 38px; display: flex; align-items: center;
-        font-family: "Anton", sans-serif; font-size: 96px; line-height: 1; color: #fff; letter-spacing: 2px; white-space: nowrap; transform: rotate(0.6deg); }
-#caption { height: 126px; white-space: nowrap; font-family: "Anton", sans-serif; font-size: 56px; line-height: 63px; letter-spacing: -1px; }
-#tech { margin-top: 4px; font-size: 56px; line-height: 64px; white-space: nowrap; -webkit-text-stroke: 1.4px #000; }
+.side { position: relative; flex: 1; min-width: 0; height: 312px; }
+#name { position: relative; width: fit-content; height: 80px; margin: 2px 0 8px -10px; padding: 0 26px 0 24px; display: flex; align-items: center;
+        font-family: "Anton", sans-serif; font-size: 60px; line-height: 1; color: #fff; letter-spacing: 1px; white-space: nowrap; transform: rotate(0.6deg); }
+#caption { white-space: nowrap; font-family: "Anton", sans-serif; font-size: 40px; line-height: 46px; letter-spacing: 0; }
+#tech { margin-top: 12px; font-size: 40px; line-height: 48px; white-space: nowrap; -webkit-text-stroke: 1px #000; }
 
-.tape-piece { position: absolute; width: 230px; height: 78px; }
+.tape-piece { position: absolute; width: 190px; height: 64px; }
 
-/* Link cue: a hand-drawn arrow, the same one as on the tags, and a typewriter label at the bottom right of the sheet. */
-#open { position: absolute; right: 30px; bottom: 36px; display: flex; align-items: center; gap: 10px; transform: rotate(-2deg); font-size: 56px; line-height: 1; white-space: nowrap; -webkit-text-stroke: 1.2px #000; }
+/* Link cue: a hand-drawn arrow, the same one as on the tags, and a typewriter label at the bottom right of the text column. */
+#open { position: absolute; right: 0; bottom: 0; display: flex; align-items: center; gap: 8px; transform: rotate(-2deg); font-size: 40px; line-height: 1; white-space: nowrap; -webkit-text-stroke: 1px #000; }
 #open svg { flex: none; overflow: visible; }

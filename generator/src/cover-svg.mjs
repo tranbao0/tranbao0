@@ -8,8 +8,8 @@ const css = `
   .flicker { animation: flicker ${CYCLE}s step-end infinite; }
   @keyframes sweep {
     0% { transform: translateY(0); }
-    52% { transform: translateY(1290px); }
-    100% { transform: translateY(1290px); }
+    52% { transform: translateY(1190px); }
+    100% { transform: translateY(1190px); }
   }
   @keyframes flicker {
     0%, 100% { opacity: 1; transform: translate(0, 0); }
@@ -36,7 +36,7 @@ export function coverSvg({ base, title, width, height, label }) {
     <stop offset="0.86" stop-color="#fff" stop-opacity="0.45"/>
     <stop offset="1" stop-color="#fff" stop-opacity="0"/>
   </linearGradient>
-  <clipPath id="sheet"><rect x="56" y="56" width="1488" height="888"/></clipPath>
+  <clipPath id="sheet"><rect x="56" y="56" width="1488" height="788"/></clipPath>
 </defs>
 <rect width="${width}" height="${height}" fill="#000"/>
 <image width="${width}" height="${height}" href="${data(base)}"/>
