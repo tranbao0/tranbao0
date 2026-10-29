@@ -10,7 +10,10 @@
 </p>
 
 <p align="center">
-<img src="assets/projects.png" alt="Track 04, Title Track: Projects. The title track is Weekrow." width="640">
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="assets/projects.png">
+  <img src="assets/projects.svg" alt="Track 04, Title Track: Projects. The title track is Weekrow." width="640">
+</picture>
 </p>
 
 <p align="center"><a href="https://github.com/tranbao0/Simple-CanvasTasks"><img src="assets/card-weekrow.png" alt="Title track: Weekrow, your Canvas week as one to-do list. TypeScript, Preact, WXT. Stamped: made with spite. Opens the repo." width="320"></a><a href="https://github.com/tranbao0/SongRanking"><img src="assets/card-songranking.png" alt="SongRanking: music video view charts, rendered as countdown videos. Python, ffmpeg, Gemini. Stamped: made with spite. Opens the repo." width="320"></a></p>
