@@ -123,8 +123,8 @@ function motionCss(letters) {
   ${pulseKeyframes(`flip-${i}`, flips, period, 'opacity: 1;', 'opacity: 0;')}
   #l${i} .twin { opacity: 0; animation: flip-${i} ${duration} step-end infinite; }`;
 
-    // The hop: letter i rises for the step in which letter i - 1 flips, in every wave. The first letter never hops.
-    if (i > 0) {
+    // The hop: letter i rises for the step in which letter i - 1 flips, in every wave.
+    if (hops(i)) {
       const hops = waveStarts.map((w) => [w + (i - 1) * STEP, w + i * STEP]);
       css += `
   ${pulseKeyframes(`hop-${i}`, hops, period, `transform: translateY(${-HOP}px);`, 'transform: translateY(0);')}
@@ -135,10 +135,14 @@ function motionCss(letters) {
   return css + REDUCED_MOTION_CSS;
 }
 
-// Throws when a hopping letter, at the top of its hop, would touch the header box. Every letter but the first hops.
+// Which letters hop: every letter but the first, because a letter hops while the letter before it flips.
+export const hops = (i) => i > 0;
+
+// Throws when a hopping letter, at the top of its hop, would touch the header box.
 export function assertHopsClearOf(header, letters, margin = 4) {
+  if (!header || !(header.w > 0 && header.h > 0)) throw new Error('cover: the header box is missing or empty, so the hops cannot be checked');
   letters.forEach((l, i) => {
-    if (i === 0) return;
+    if (!hops(i)) return;
     const top = l.y - HOP;
     const apart = l.x >= header.x + header.w + margin || l.x + l.width <= header.x - margin || top >= header.y + header.h + margin;
     if (!apart) throw new Error(`cover letter ${i} hops into the header: its top reaches y ${top}, the header ends at y ${Math.ceil(header.y + header.h)}`);

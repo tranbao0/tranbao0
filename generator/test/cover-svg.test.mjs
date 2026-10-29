@@ -111,4 +111,17 @@ test('the build stops when a hopping letter would reach the header', async () =>
   assert.throws(() => assertHopsClearOf(header, blocked), /letter 1 hops into the header/);
   // The first letter never hops, so it may sit close under the header.
   assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 200, y: 110, width: 100 }]));
+  // The margin is 4 px: a hop top exactly at the header bottom plus 4 passes, one pixel higher stops the build.
+  const bottom = header.y + header.h;
+  assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 320, y: bottom + 4 + HOP, width: 100 }]));
+  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 320, y: bottom + 3 + HOP, width: 100 }]), /hops into the header/);
+  // A letter fully left or right of the header may hop above its bottom.
+  assert.doesNotThrow(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 0, y: 40, width: header.x - 4 }, { x: header.x + header.w + 4, y: 40, width: 50 }]));
+  assert.throws(() => assertHopsClearOf(header, [{ x: 0, y: 900, width: 1 }, { x: 0, y: 40, width: header.x - 3 }]), /hops into the header/);
+});
+
+test('the build stops when the header box is missing or empty', async () => {
+  const { assertHopsClearOf } = await import('../src/cover-svg.mjs');
+  assert.throws(() => assertHopsClearOf(undefined, []), /header box is missing or empty/);
+  assert.throws(() => assertHopsClearOf({ x: 0, y: 0, w: 0, h: 0 }, []), /header box is missing or empty/);
 });
