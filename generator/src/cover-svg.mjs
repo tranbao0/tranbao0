@@ -1,18 +1,23 @@
 // Animated cover: a base photocopy and one cut-out per title letter, each with an inverted twin.
 // Everything moves in stop-motion steps (no easing, no fades), like a title cut from magazine letters.
+// The whole cycle is one period, and every animated element repeats it, so the parts never drift apart.
 //
-// Timeline, in seconds:
+// One cycle, in seconds:
 //   LEAD                    bare paper
-//   entrance (3 steps)      one letter alone at the middle, a small cluster, every letter bunched, then all in place
+//   fan out (3 steps)       one letter alone at the middle, a small cluster, every letter bunched, then all in place
 //   HOLD                    nothing moves
-//   first wave              one letter at a time flips to its inverted twin for one step;
-//                           letter 2k also hops up for the step in which letter k flips
+//   jump wave               in step k letter k flips to its inverted twin while letter k + 1 hops up (one step behind the flip)
 //   REST                    nothing moves
-//   later waves             the flips only, forever, with the same rest between them
+//   jump wave               the same again
+//   REST                    nothing moves
+//   fan in (3 steps)        the fan out played backward: every letter bunched, the small cluster, one letter alone, bare paper
+//   then the cycle starts again with the lead
 
 // The helpers marked "shared" also build the PROJECTS strip (projects-svg.mjs).
 export const STEP = 5 / 60; // one stop-motion step: 5 frames at 60 fps
 const LEAD = 0.4;
+const FAN = 7.5 / 60; // one step of the fan out and the fan in: 9 / 6 of a wave step, because the title has 6 letters where the reference has 9
+const WAVES = 2; // jump waves between the fan out and the fan in
 const HOLD = 20 / 60;
 export const REST = 3;
 export const HOP = 70; // px a hopping letter rises
@@ -32,11 +37,16 @@ const entranceSteps = (count) => {
 export const pct = (v) => `${+(v * 100).toFixed(4)}%`;
 export const sec = (v) => `${+v.toFixed(4)}s`;
 
+// Keyframes that hold `on` during each pulse ([start, end] in seconds from the start of the period) and `off` the rest of the period.
+export function pulseKeyframes(name, pulses, period, on, off) {
+  const stops = pulses.flatMap(([start, end]) => [`${pct(start / period)} { ${on} }`, `${pct(end / period)} { ${off} }`]);
+  const first = pulses[0][0] === 0 ? [] : [`0% { ${off} }`];
+  return `@keyframes ${name} { ${[...first, ...stops, `100% { ${off} }`].join(' ')} }`;
+}
+
 // Shared. Keyframes for a wave in which item i is "on" for one STEP and "off" for the rest of the period.
 export function waveKeyframes(name, i, period, on, off) {
-  const start = pct((i * STEP) / period);
-  const end = pct(((i + 1) * STEP) / period);
-  return `@keyframes ${name} { ${i === 0 ? '' : `0% { ${off} } `}${start} { ${on} } ${end} { ${off} } 100% { ${off} } }`;
+  return pulseKeyframes(name, [[i * STEP, (i + 1) * STEP]], period, on, off);
 }
 
 // Shared. Switches every animation off for readers who ask for less motion.
@@ -70,12 +80,19 @@ ${tiles}
 `;
 }
 
+// Seconds with enough digits that the period does not round away from the sum of its parts.
+const exact = (v) => `${+v.toFixed(6)}s`;
+
 function motionCss(letters) {
   const count = letters.length;
   const entrance = entranceSteps(count);
-  const total = LEAD + entrance.length * STEP;
-  const waveStart = total + HOLD;
-  const period = count * STEP + REST;
+  const fanLength = entrance.length * FAN;
+  const waveLength = count * STEP;
+  const inPlace = LEAD + fanLength; // the fan out is done
+  const waveStarts = Array.from({ length: WAVES }, (_, w) => inPlace + HOLD + w * (waveLength + REST));
+  const fanInStart = waveStarts[WAVES - 1] + waveLength + REST;
+  const period = fanInStart + fanLength;
+  const duration = exact(period);
   // The piled letters gather at the middle of the word, from its left edge to its right edge.
   const left = Math.min(...letters.map((l) => l.x));
   const right = Math.max(...letters.map((l) => l.x + l.width));
@@ -84,31 +101,52 @@ function motionCss(letters) {
 
   letters.forEach((l, i) => {
     const centre = l.x + l.width / 2;
-    // Keyframe 0 is the bare paper; each entrance step starts after the lead and lasts one STEP.
-    const frames = [`0% { opacity: 0; transform: translate(0, 0); }`];
-    entrance.forEach((s, k) => {
+    const bare = 'opacity: 0; transform: translate(0, 0);';
+    const stateOf = (k) => {
+      const s = entrance[k];
       const dx = (middle - centre) * (1 - s.travelled) + (s.nudge?.[i] ?? 0);
-      frames.push(`${pct((LEAD + k * STEP) / total)} { opacity: ${s.shown.includes(i) ? 1 : 0}; transform: translate(${dx.toFixed(1)}px, 0); }`);
-    });
-    frames.push(`100% { opacity: 1; transform: translate(0, 0); }`);
+      return `opacity: ${s.shown.includes(i) ? 1 : 0}; transform: translate(${dx.toFixed(1)}px, 0);`;
+    };
+    // Bare paper, then each fan out step in order, all in place, then the same steps in reverse order, then bare paper again.
+    const frames = [`0% { ${bare} }`];
+    entrance.forEach((_, k) => frames.push(`${pct((LEAD + k * FAN) / period)} { ${stateOf(k)} }`));
+    frames.push(`${pct(inPlace / period)} { opacity: 1; transform: translate(0, 0); }`);
+    entrance.forEach((_, j) => frames.push(`${pct((fanInStart + j * FAN) / period)} { ${stateOf(entrance.length - 1 - j)} }`));
+    frames.push(`100% { ${bare} }`);
     css += `
   @keyframes enter-${i} { ${frames.join(' ')} }
-  #l${i} { animation: enter-${i} ${sec(total)} step-end forwards; }`;
+  #l${i} { animation: enter-${i} ${duration} step-end infinite; }`;
 
     // The flip: the inverted twin shows for letter i's step of every wave.
+    const flips = waveStarts.map((w) => [w + i * STEP, w + (i + 1) * STEP]);
     css += `
-  ${waveKeyframes(`flip-${i}`, i, period, 'opacity: 1;', 'opacity: 0;')}
-  #l${i} .twin { opacity: 0; animation: flip-${i} ${sec(period)} step-end ${sec(waveStart)} infinite; }`;
+  ${pulseKeyframes(`flip-${i}`, flips, period, 'opacity: 1;', 'opacity: 0;')}
+  #l${i} .twin { opacity: 0; animation: flip-${i} ${duration} step-end infinite; }`;
 
-    // The hop: once, in the first wave, for the step in which letter i / 2 flips.
-    if (i > 0 && i % 2 === 0 && i / 2 < count) {
+    // The hop: letter i rises for the step in which letter i - 1 flips, in every wave.
+    if (hops(i)) {
+      const hops = waveStarts.map((w) => [w + (i - 1) * STEP, w + i * STEP]);
       css += `
-  @keyframes hop-${i} { 0% { transform: translateY(${-HOP}px); } 100% { transform: translateY(0); } }
-  #l${i} .hop { animation: hop-${i} ${sec(STEP)} step-end ${sec(waveStart + (i / 2) * STEP)}; }`;
+  ${pulseKeyframes(`hop-${i}`, hops, period, `transform: translateY(${-HOP}px);`, 'transform: translateY(0);')}
+  #l${i} .hop { animation: hop-${i} ${duration} step-end infinite; }`;
     }
   });
 
   return css + REDUCED_MOTION_CSS;
+}
+
+// Which letters hop: every letter but the first, because a letter hops while the letter before it flips.
+export const hops = (i) => i > 0;
+
+// Throws when a hopping letter, at the top of its hop, would touch the header box.
+export function assertHopsClearOf(header, letters, margin = 4) {
+  if (!header || !(header.w > 0 && header.h > 0)) throw new Error('cover: the header box is missing or empty, so the hops cannot be checked');
+  letters.forEach((l, i) => {
+    if (!hops(i)) return;
+    const top = l.y - HOP;
+    const apart = l.x >= header.x + header.w + margin || l.x + l.width <= header.x - margin || top >= header.y + header.h + margin;
+    if (!apart) throw new Error(`cover letter ${i} hops into the header: its top reaches y ${top}, the header ends at y ${Math.ceil(header.y + header.h)}`);
+  });
 }
 
 // `letters` lists the title tiles from left to right, each { normal, inverted, x, y, width, height }.

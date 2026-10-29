@@ -5,8 +5,9 @@ import { pathToFileURL } from 'node:url';
 export async function openRenderer() {
   const browser = await chromium.launch();
   return {
-    // Renders the #page element of an HTML file. Returns { png, zones }.
+    // Renders the #page element of an HTML file. Returns { png, zones, boxes }.
     // `zones` lists the boxes of elements marked data-clean, data-soft or data-nospeck, in page pixels (see photocopy.mjs).
+    // `boxes` maps the name in each data-box attribute to that element's box, in page pixels, for build checks.
     // `layer` is passed to the page as ?layer=... so a page can hide parts of itself.
     // `data`, if given, is available to the page as window.PAGE_DATA before its scripts run.
     async render(htmlPath, { layer = 'all', transparent = false, width = 1600, data } = {}) {
@@ -25,12 +26,19 @@ export async function openRenderer() {
             return { x: b.left - origin.left, y: b.top - origin.top, w: b.width, h: b.height, mode: el.hasAttribute('data-clean') ? 'clean' : el.hasAttribute('data-soft') ? 'soft' : 'speck' };
           });
         });
+        const boxes = await page.evaluate(() => {
+          const origin = document.getElementById('page').getBoundingClientRect();
+          return Object.fromEntries([...document.querySelectorAll('[data-box]')].map((el) => {
+            const b = el.getBoundingClientRect();
+            return [el.dataset.box, { x: b.left - origin.left, y: b.top - origin.top, w: b.width, h: b.height }];
+          }));
+        });
         const png = await page.screenshot({
           clip: { x: 0, y: 0, width, height: Math.ceil(box.height) },
           omitBackground: transparent,
           animations: 'disabled',
         });
-        return { png, zones };
+        return { png, zones, boxes };
       } finally {
         await page.close();
       }

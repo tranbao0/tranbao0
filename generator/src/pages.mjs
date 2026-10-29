@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { photocopy, decodeRgba } from './photocopy.mjs';
 import { encodePalettePng, decodeGrayPng, compositeGray } from './encode.mjs';
-import { coverSvg } from './cover-svg.mjs';
+import { assertHopsClearOf, coverSvg } from './cover-svg.mjs';
 import { projectsSvg, PROJECTS_LETTERS } from './projects-svg.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -99,6 +99,8 @@ export async function buildCover(renderer) {
   const baseGray = await decodeGrayPng(base);
   const tiles = await cutOutTiles(renderer, 'cover.html', { count: 6, seed: 102, inverted: true });
   const letters = await croppedLetters(tiles);
+  const { boxes } = await renderer.render(path.join(pagesDir, 'cover.html'), { layer: 'base' });
+  assertHopsClearOf(boxes.header, letters);
   const svg = coverSvg({
     base,
     letters,
