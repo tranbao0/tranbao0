@@ -42,21 +42,19 @@
 
     const title = document.getElementById('title');
     // Cut-out letters laid out left to right on one baseline. `dy` nudges a tile off the baseline.
-    // `inverse` is the flipped clipping of the same tile: paper and letter swap light and dark.
     const letters = [
-      { text: 'W', font: 'Anton', heightInk: 320, fill: '#000', color: '#fff', inverse: { fill: '#fff', color: '#000' }, rot: -3, dy: 0, gap: -12 },
-      { text: 'e', font: 'Alfa Slab One', heightInk: 185, fill: '#fff', color: '#000', inverse: { fill: '#000', color: '#fff' }, rot: 2.5, dy: 6, gap: 44 },
-      { text: 'c', font: 'Archivo Black', heightInk: 168, fill: '#8f8f8f', color: '#000', inverse: { fill: '#6e6e6e', color: '#fff' }, rot: -2, dy: 4, gap: -12 },
-      { text: 'o', font: 'Anton', heightInk: 185, fill: '#000', color: '#fff', inverse: { fill: '#fff', color: '#000' }, rot: 3, dy: 8, gap: -12 },
-      { text: 'd', font: 'Alfa Slab One', heightInk: 320, fill: '#fff', color: '#000', inverse: { fill: '#000', color: '#fff' }, rot: -1.5, dy: -2, gap: -12 },
-      { text: 'e', font: 'Anton', heightInk: 185, fill: '#fff', color: '#000', inverse: { fill: '#000', color: '#fff' }, rot: 2, dy: 3, gap: 0 },
+      { text: 'W', font: 'Anton', heightInk: 320, fill: '#000', color: '#fff', rot: -3, dy: 0, gap: -12 },
+      { text: 'e', font: 'Alfa Slab One', heightInk: 185, fill: '#fff', color: '#000', rot: 2.5, dy: 6, gap: 44 },
+      { text: 'c', font: 'Archivo Black', heightInk: 168, fill: '#8f8f8f', color: '#000', rot: -2, dy: 4, gap: -12 },
+      { text: 'o', font: 'Anton', heightInk: 185, fill: '#000', color: '#fff', rot: 3, dy: 8, gap: -12 },
+      { text: 'd', font: 'Alfa Slab One', heightInk: 320, fill: '#fff', color: '#000', rot: -1.5, dy: -2, gap: -12 },
+      { text: 'e', font: 'Anton', heightInk: 185, fill: '#fff', color: '#000', rot: 2, dy: 3, gap: 0 },
     ];
 
-    // ?letter=N shows only tile N, and ?inverted=1 shows its flipped clipping.
+    // ?letter=N shows only tile N.
     // The layout always runs over every tile, so a single tile sits exactly where it sits in the whole title.
     const query = new URLSearchParams(location.search);
     const only = query.has('letter') ? Number(query.get('letter')) : null;
-    const flipped = query.get('inverted') === '1';
 
     const baseline = 478;
     const left = 184;
@@ -69,8 +67,7 @@
     document.body.dataset.titleScale = scale.toFixed(3);
     let x = left;
     letters.forEach((l, i) => {
-      const look = flipped ? { ...l, ...l.inverse } : l;
-      const el = zine.tile(title, { ...look, heightInk: l.heightInk * scale, padX, padY, x, y: 0, seed: 31 + i });
+      const el = zine.tile(title, { ...l, heightInk: l.heightInk * scale, padX, padY, x, y: 0, seed: 31 + i });
       el.style.top = `${baseline + l.dy - (el.offsetHeight - padY)}px`;
       x += el.offsetWidth + l.gap;
       if (only !== null && only !== i) el.remove();

@@ -1,4 +1,4 @@
-// Animated cover: a base photocopy and one cut-out per title letter, each with an inverted twin.
+// Animated cover: a base photocopy and one cut-out per title letter.
 // Everything moves in stop-motion steps (no easing, no fades), like a title cut from magazine letters.
 // The whole cycle is one period, and every animated element repeats it, so the parts never drift apart.
 //
@@ -6,7 +6,7 @@
 //   LEAD                    bare paper
 //   fan out (3 steps)       one letter alone at the middle, a small cluster, every letter bunched, then all in place
 //   HOLD                    nothing moves
-//   jump wave               in step k letter k flips to its inverted twin while letter k + 1 hops up (one step behind the flip)
+//   jump wave               in step k letter k + 1 hops up and back down; the first letter stays put
 //   REST                    nothing moves
 //   jump wave               the same again
 //   REST                    nothing moves
@@ -20,7 +20,7 @@ const FAN = 7.5 / 60; // one step of the fan out and the fan in: 9 / 6 of a wave
 const WAVES = 2; // jump waves between the fan out and the fan in
 const HOLD = 20 / 60;
 export const REST = 3;
-export const HOP = 70; // px a hopping letter rises
+export const HOP = 95; // px a hopping letter rises
 
 // Entrance: for each step, which letters show and how much of the way to the final place they have
 // travelled (0 = piled at the middle of the word, 1 = in place). Letter numbers count from the left.
@@ -57,14 +57,10 @@ export const REDUCED_MOTION_CSS = `
 
 const dataUri = (png) => `data:image/png;base64,${png.toString('base64')}`;
 
-// Shared. One group per letter: an outer group for entrance moves, an inner one for the hop, then the clipping and its inverted twin if it has one.
-// The two PNGs of a letter have the same size and place, so a flip never shifts the letter.
+// Shared. One group per letter: an outer group for entrance moves, an inner one for the hop, then the clipping.
 export function letterTiles(letters) {
   return letters
-    .map((l, i) => {
-      const image = (png, cls = '') => `<image ${cls}x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" href="${dataUri(png)}"/>`;
-      return `<g id="l${i}" class="letter"><g class="hop">\n  ${image(l.normal)}${l.inverted ? `\n  ${image(l.inverted, 'class="twin" ')}` : ''}\n</g></g>`;
-    })
+    .map((l, i) => `<g id="l${i}" class="letter"><g class="hop">\n  <image x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" href="${dataUri(l.normal)}"/>\n</g></g>`)
     .join('\n');
 }
 
@@ -87,7 +83,7 @@ function motionCss(letters) {
   const count = letters.length;
   const entrance = entranceSteps(count);
   const fanLength = entrance.length * FAN;
-  const waveLength = count * STEP;
+  const waveLength = (count - 1) * STEP; // every letter but the first hops, one per step
   const inPlace = LEAD + fanLength; // the fan out is done
   const waveStarts = Array.from({ length: WAVES }, (_, w) => inPlace + HOLD + w * (waveLength + REST));
   const fanInStart = waveStarts[WAVES - 1] + waveLength + REST;
@@ -117,17 +113,11 @@ function motionCss(letters) {
   @keyframes enter-${i} { ${frames.join(' ')} }
   #l${i} { animation: enter-${i} ${duration} step-end infinite; }`;
 
-    // The flip: the inverted twin shows for letter i's step of every wave.
-    const flips = waveStarts.map((w) => [w + i * STEP, w + (i + 1) * STEP]);
-    css += `
-  ${pulseKeyframes(`flip-${i}`, flips, period, 'opacity: 1;', 'opacity: 0;')}
-  #l${i} .twin { opacity: 0; animation: flip-${i} ${duration} step-end infinite; }`;
-
-    // The hop: letter i rises for the step in which letter i - 1 flips, in every wave.
+    // The hop: letter i rises for step i - 1 of every wave.
     if (hops(i)) {
-      const hops = waveStarts.map((w) => [w + (i - 1) * STEP, w + i * STEP]);
+      const pulses = waveStarts.map((w) => [w + (i - 1) * STEP, w + i * STEP]);
       css += `
-  ${pulseKeyframes(`hop-${i}`, hops, period, `transform: translateY(${-HOP}px);`, 'transform: translateY(0);')}
+  ${pulseKeyframes(`hop-${i}`, pulses, period, `transform: translateY(${-HOP}px);`, 'transform: translateY(0);')}
   #l${i} .hop { animation: hop-${i} ${duration} step-end infinite; }`;
     }
   });
@@ -135,7 +125,7 @@ function motionCss(letters) {
   return css + REDUCED_MOTION_CSS;
 }
 
-// Which letters hop: every letter but the first, because a letter hops while the letter before it flips.
+// Which letters hop: every letter but the first, which sits right under the header.
 export const hops = (i) => i > 0;
 
 // Throws when a hopping letter, at the top of its hop, would touch the header box.
@@ -149,8 +139,7 @@ export function assertHopsClearOf(header, letters, margin = 4) {
   });
 }
 
-// `letters` lists the title tiles from left to right, each { normal, inverted, x, y, width, height }.
-// The two PNGs of a tile have the same size and place, so a flip never shifts the letter.
+// `letters` lists the title tiles from left to right, each { normal, x, y, width, height }.
 export function coverSvg({ base, letters, width, height, label }) {
   return svgDocument({ width, height, label, css: motionCss(letters), base, tiles: letterTiles(letters) });
 }

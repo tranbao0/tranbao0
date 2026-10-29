@@ -56,48 +56,33 @@ function cropLayer({ gray, alpha, width }, box) {
   return out;
 }
 
-// The tiles of a lettered page, each as its own full-page photocopy: as cut, and, if `inverted`, flipped.
-// Both clippings use the same page seed, so the paper edges wobble the same way and the two line up pixel for pixel.
-// The page takes ?letter=N and ?inverted=1; they ride along in the layer string.
-async function cutOutTiles(renderer, file, { count, seed, inverted = false }) {
+// The tiles of a lettered page, each as its own full-page photocopy with the same page seed.
+// The page takes ?letter=N, which rides along in the layer string.
+async function cutOutTiles(renderer, file, { count, seed }) {
   const tiles = [];
-  for (let i = 0; i < count; i++) {
-    const copy = (flipped) => renderCopy(renderer, file, { layer: `title&letter=${i}${flipped ? '&inverted=1' : ''}`, transparent: true, seed });
-    const normal = await copy(false);
-    if (!inverted) {
-      tiles.push({ normal });
-      continue;
-    }
-    const twin = await copy(true);
-    if (!normal.alpha.every((a, k) => a === twin.alpha[k])) throw new Error(`${file} letter ${i}: the two clippings do not line up`);
-    tiles.push({ normal, inverted: twin });
-  }
+  for (let i = 0; i < count; i++) tiles.push(await renderCopy(renderer, file, { layer: `title&letter=${i}`, transparent: true, seed }));
   return tiles;
 }
 
-// Crops every tile to the ink box of its normal clipping, as palette PNGs: [{ x, y, width, height, normal, inverted? }].
+// Crops every tile to its ink box, as palette PNGs: [{ x, y, width, height, normal }].
 async function croppedLetters(tiles) {
   const letters = [];
-  for (const { normal, inverted } of tiles) {
-    const box = inkBox(normal);
-    letters.push({
-      ...box,
-      normal: await encodePalettePng(cropLayer(normal, box)),
-      ...(inverted && { inverted: await encodePalettePng(cropLayer(inverted, box)) }),
-    });
+  for (const tile of tiles) {
+    const box = inkBox(tile);
+    letters.push({ ...box, normal: await encodePalettePng(cropLayer(tile, box)) });
   }
   return letters;
 }
 
 // A still made of a base photocopy with the tiles stacked on it from left to right, like the animated SVG.
 function stillOf(baseGray, tiles) {
-  return tiles.reduce((still, tile) => compositeGray(still, tile.normal), baseGray);
+  return tiles.reduce((still, tile) => compositeGray(still, tile), baseGray);
 }
 
 export async function buildCover(renderer) {
   const base = await copyLayer(renderer, 'cover.html', { layer: 'base', transparent: false, seed: 101 });
   const baseGray = await decodeGrayPng(base);
-  const tiles = await cutOutTiles(renderer, 'cover.html', { count: 6, seed: 102, inverted: true });
+  const tiles = await cutOutTiles(renderer, 'cover.html', { count: 6, seed: 102 });
   const letters = await croppedLetters(tiles);
   const { boxes } = await renderer.render(path.join(pagesDir, 'cover.html'), { layer: 'base' });
   assertHopsClearOf(boxes.header, letters);
@@ -115,7 +100,7 @@ export async function buildCover(renderer) {
     { path: path.join(assetsDir, 'cover-still.png'), bytes: stillPng.length },
     { path: path.join(assetsDir, 'cover.svg'), bytes: Buffer.byteLength(svg) },
     { path: 'embedded base layer', bytes: base.length },
-    { path: 'embedded title tiles', bytes: letters.reduce((sum, l) => sum + l.normal.length + l.inverted.length, 0) },
+    { path: 'embedded title tiles', bytes: letters.reduce((sum, l) => sum + l.normal.length, 0) },
   ];
 }
 
