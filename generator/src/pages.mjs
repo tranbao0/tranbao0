@@ -97,7 +97,7 @@ export async function buildProjects(renderer) {
     letters,
     width: baseGray.width,
     height: baseGray.height,
-    label: 'Track 04, Title Track: Projects. The title track is Weekrow.',
+    label: 'Track 04, Title Track: Projects. The title track is Tools for Canvas.',
   });
   const stillPng = await encodePalettePng(stillOf(baseGray, tiles));
   await writeFile(path.join(assetsDir, 'projects.png'), stillPng);
