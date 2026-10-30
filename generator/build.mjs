@@ -13,7 +13,7 @@ const jobs = {
   cover: (r) => buildCover(r),
   'profile-credits': (r) => buildStatic(r, { file: 'profile-credits.html', out: 'profile-credits.png', seed: 202 }),
   projects: (r) => buildProjects(r),
-  'card-weekrow': card('weekrow', 411),
+  'card-tools-for-canvas': card('tools-for-canvas', 411),
   'card-songranking': card('songranking', 412),
   'tag-fan-letter': tag('fan-letter', 611),
   'tag-kofi': tag('kofi', 612),

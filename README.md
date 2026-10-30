@@ -12,11 +12,11 @@
 <p align="center">
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/projects.png">
-  <img src="assets/projects.svg" alt="Track 04, Title Track: Projects. The title track is Weekrow." width="640">
+  <img src="assets/projects.svg" alt="Track 04, Title Track: Projects. The title track is Tools for Canvas." width="640">
 </picture>
 </p>
 
-<p align="center"><a href="https://github.com/tranbao0/Simple-CanvasTasks"><img src="assets/card-weekrow.png" alt="Title track: Weekrow, your Canvas week as one to-do list. TypeScript, Preact, WXT. Stamped: made with spite. Opens the repo." width="320"></a><a href="https://github.com/tranbao0/SongRanking"><img src="assets/card-songranking.png" alt="SongRanking: music video view charts, rendered as countdown videos. Python, ffmpeg, Gemini. Stamped: made with spite. Opens the repo." width="320"></a></p>
+<p align="center"><a href="https://github.com/tranbao0/tools-for-canvas"><img src="assets/card-tools-for-canvas.png" alt="Title track: Tools for Canvas, your Canvas week as one to-do list. TypeScript, Preact, WXT. Stamped: made with spite. Opens the repo." width="320"></a><a href="https://github.com/tranbao0/SongRanking"><img src="assets/card-songranking.png" alt="SongRanking: music video view charts, rendered as countdown videos. Python, ffmpeg, Gemini. Stamped: made with spite. Opens the repo." width="320"></a></p>
 
 <p align="center">
 <img src="assets/activity.png" alt="Track 05, Activity. 661 contributions in the last year. Top languages: TypeScript 37%, JavaScript 23%, Python 19%, Java 15%, Swift 5%. Copied 2026-10-29. Track 06, Outro: Thanks to Neverland. And to everyone who read this far. See you at the next comeback. Tracklist: 01 We code Intro, 02 Member Profile, 03 Credits, 04 Title Track, 05 Activity, 06 Outro: Thanks to Neverland. Copyright 2026 Bao Tran." width="640">
